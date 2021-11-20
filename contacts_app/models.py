@@ -85,8 +85,17 @@ class view_table(models.Model):
 	def __str__(self):
              return "%d" % (self.view_contact)
 
+class Score_tbl(models.Model):
+	Method=models.CharField(max_length=200)
+	Status=models.CharField(max_length=1)
+	user_id=models.ForeignKey(User_table, on_delete=models.CASCADE)
+	Creation_date=models.ForeignKey(User_table, related_name="creation_date_of_record",on_delete=models.CASCADE)
+	Score_id=models.CharField(max_length=200)
 
-
+class Method_tbl(models.Model):
+	Score_id=models.ForeignKey(Score_tbl, related_name="score_id_for_matrix", on_delete=models.CASCADE)
+	Fields=models.CharField(max_length=200)
+	Weightage=models.IntegerField()
 	
 	
 	
