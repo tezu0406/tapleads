@@ -2,7 +2,7 @@ from django.db import models
 
 
 #user type [admin,subscriber]
-#Subscription_type [free,paid]
+#Subscription_type [free,paid,system]
 
 class User_table(models.Model):
 	User_ID=models.IntegerField(primary_key=True)
