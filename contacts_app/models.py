@@ -1,51 +1,96 @@
 from django.db import models
 
+
+#user type [admin,subscriber]
+#Subscription_type [free,paid]
+
+class User_table(models.Model):
+	User_ID=models.IntegerField(primary_key=True)
+	Username=models.CharField(max_length=200)
+	Password=models.CharField(max_length=200)
+	User_email=models.EmailField(max_length=200)
+	User_Phone=models.CharField(max_length=10)
+	Subscription_type=models.CharField()
+	Creation_date=models.DateField()
+	Name=models.CharField(max_length=200)
+	Status=models.CharField(max_length=200)
+	User_type=models.CharField(max_length=200)
+	
+	def __str__(self):
+             return "%s %s" % (self.Username, self.Password)
+
+
 class Contact_table(models.Model):
-	Contact_type=models.CharField()
-	Full_name=models.CharField()
-	First_name=models.CharField()
-	Middle_name=models.CharField()
-	Last_name=models.CharField()
-	Company=models.CharField()
-	Designation=models.CharField()
-	Emailid=models.EmailField()
+	Contact_ID=models.IntegerField(primary_key=True)
+	Contact_type=models.CharField(max_length=200)
+	Full_name=models.CharField(max_length=200)
+	First_name=models.CharField(max_length=200)
+	Middle_name=models.CharField(max_length=200)
+	Last_name=models.CharField(max_length=200)
+	Company=models.CharField(max_length=200)
+	Designation=models.CharField(max_length=200)
+	Emailid=models.EmailField(max_length=200)
 	Aadhar=models.CharField(max_length=12)
 	Pan_card=models.CharField(max_length=10)
 	Phone=models.CharField(max_length=10)
 	Location=models.CharField()
-	Gender=models.CharField(max_length=1)
-	Title=models.CharField()
-	Department=models.CharField()
-	University=models.CharField()
-	Degree=models.CharField()
+	Gender=models.CharField(max_length=10)
+	Title=models.CharField(max_length=200)
+	Department=models.CharField(max_length=200)
+	University=models.CharField(max_length=200)
+	Degree=models.CharField(max_length=200)
 	Passing_year=models.IntegerField()
-	College=models.CharField()
+	College=models.CharField(max_length=200)
 	LinkedIN=models.URLField()
 	Facebook=models.URLField()
 	Instagram=models.URLField()
-	Industry=models.CharField()
-	Country=models.CharField()
-	State=models.CharField()
+	Industry=models.CharField(max_length=200)
+	Country=models.CharField(max_length=200)
+	State=models.CharField(max_length=200)
 	Zip=models.IntegerField()
-	Key_Skills=models.CharField()
-	Total_Experience=models.CharField()
-	Years_in_Business=models.CharField()
-	CIN_No=models.CharField()
-	Turnover=models.CharField()
+	Key_Skills=models.CharField(max_length=200)
+	Total_Experience=models.CharField(max_length=200)
+	Years_in_Business=models.CharField(max_length=200)
+	CIN_No=models.CharField(max_length=200)
+	Turnover=models.CharField(max_length=200)
 	Date_of_Incorporation=models.DateField()
-	Employees=models.CharField()
-	CTC=models.CharField()
-	Notes=models.CharField()
-	Remarks=models.CharField()
-	User_ID=models.CharField(primary_key=True)
+	Employees=models.CharField(max_length=200)
+	CTC=models.CharField(max_length=200)
+	Notes=models.CharField(max_length=200)
+	Remarks=models.CharField(max_length=200)
+	
+	user_id = models.ForeignKey(User_table, on_delete=models.CASCADE)
+	def __str__(self):
+            return "%s %s" % (self.First_name, self.Phone)
+class Save_search(models.Model):
+	search_id=models.IntegerField(primary_key=True)
+	Search_Criteria=models.CharField(max_length=200)
+	user_id = models.ForeignKey(User_table, on_delete=models.CASCADE)
+	
+class Limit_table(models.Model):
+	limit_id=models.IntegerField(primary_key=True)
+	Total_limit=models.IntegerField()
+	validation_date=models.DateField()
+	balance=models.IntegerField()
+	user_id = models.ForeignKey(User_table, on_delete=models.CASCADE)
+	
+	def __str__(self):
+             return "%d  %d" % (self.Total_limit, self.balance)
 
-class User_table(models.Model):
-	Username=models.CharField()
-	Password=models.CharField()
-	User_email=models.EmailField()
-	User_Phone=models.CharField(max_length=10)
-	Subscription_type=models.CharField()
-	Creation_date=models.DateField()
-	Name=models.CharField()
-	Status=models.CharField()
-	User_type=models.CharField()
+class view_table(models.Model):
+	view_id=models.IntegerField(primary_key=True)
+	view_contact=models.IntegerField()
+	user_id = models.ForeignKey(User_table, on_delete=models.CASCADE)
+	
+	def __str__(self):
+             return "%d" % (self.view_contact)
+
+
+
+	
+	
+	
+	
+	
+	
+
