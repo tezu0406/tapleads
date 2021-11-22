@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect 
 from datetime import datetime
-
+import pandas as pd
 
 # Create your views here.
 def login(request):
@@ -29,7 +29,7 @@ def logout(request):
   request.session['Username']=None
   return redirect('/')
 
-def registration(request):
+def user_registration(request):
   Username=request.session.get('Username')
   if Username != None:
     return redirect('/')
@@ -52,8 +52,10 @@ def registration(request):
       
     expect:
       messages.info(request, 'data already exited')
-      
 
-      
+def import_contacts(request):
+  data=pd.read_csv()
+  data.delete_duplicates()
+  return render(request,'import_contacts.html')
       
     
