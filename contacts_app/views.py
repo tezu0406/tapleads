@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect 
+from contacts_app.models import User_table,Contact_table,Save_search,Limit_table,view_table,Score_tbl,Method_tbl
 from datetime import datetime
 
 
@@ -43,15 +44,15 @@ def registration(request):
     Name=request.POST['Name']
     Status=request.POST['Status']
     User_type=request.POST['User_type']
-    
     try:
-      user=User_table(Username=Username,Password=Password,User_email=User_email,User_Phone=User_Phone,Subscription_type=Subscription_type,Creation_date=datetime.today(),Name=Name,Status=Status,User_type=User_type)
-      user.save()
-      message.success(request,'registration succesfully')
-      return render(request,'login.html')
+        user=User_table(Username=Username,Password=Password,User_email=User_email,User_Phone=User_Phone,Subscription_type=Subscription_type,Creation_date=datetime.today(),Name=Name,Status=Status,User_type=User_type)
+        user.save()
+        
+        return render(request,'login.html')
+    except:
+         redirect ('/')
       
-    expect:
-      messages.info(request, 'data already exited')
+    
       
 
       
