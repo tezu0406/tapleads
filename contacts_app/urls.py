@@ -5,4 +5,5 @@ from contacts_app import views
 
 urlpatterns = [
     path('',views.login, name='login_reg')
+    path('registration',views.registration, name='registration')
 ]
