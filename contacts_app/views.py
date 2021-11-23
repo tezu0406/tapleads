@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect 
 from contacts_app.models import User_table,Contact_table,Save_search,Limit_table,view_table,Score_tbl,Method_tbl
 from datetime import datetime
-import pandas as pd
+
 
 # Create your views here.
 def login(request):
@@ -30,18 +30,20 @@ def logout(request):
   request.session['Username']=None
   return redirect('/')
 
-def user_registration(request):
+def registration(request):
   Username=request.session.get('Username')
   if Username != None:
     return redirect('/')
   
   if request.method=="POST":
+    Name=request.POST['Name']
+    User_email=request.POST['User_email']
     Username=request.POST['Username']
     Password=request.POST['Password']
-    User_email=request.POST['User_email']
+   
     User_Phone=request.POST['User_Phone']
     Subscription_type=request.POST['Subscription_type']
-    Name=request.POST['Name']
+    
     Status=request.POST['Status']
     User_type=request.POST['User_type']
     try:
@@ -50,9 +52,10 @@ def user_registration(request):
         
         return render(request,'login.html')
     except:
-         redirect ('/')
-    expect:
-      messages.info(request, 'data already exited')
+         return redirect ('/')
+  return render(request,'registration.html')
+
+     
       
 def import_contacts(request):
   data=pd.read_csv()
