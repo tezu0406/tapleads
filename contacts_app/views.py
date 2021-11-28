@@ -55,7 +55,17 @@ def registration(request):
          return redirect ('/')
   return render(request,'registration.html')
 
-     
+def Add_record(request):
+    upload_type=input("manual type press M, file type press F=")
+    if upload_type=='M':
+      return render(request,'add_record.html')
+
+    elif upload_type=='F':
+      return render(request,'import_record.html')
+    
+    else:
+      print("please press correct option!!")
+   
       
 def import_contacts(request):
   data=pd.read_csv()
