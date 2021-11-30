@@ -11,7 +11,7 @@ class User_table(models.Model):
 	User_email=models.EmailField(max_length=200)
 	User_Phone=models.CharField(max_length=10)
 	Subscription_type=models.CharField(max_length=200)
-	Creation_date=models.DateField()
+	Creation_date=models.DateField(auto_now_add=True)
 	Name=models.CharField(max_length=200)
 	Status=models.CharField(max_length=200)
 	User_type=models.CharField(max_length=200)
