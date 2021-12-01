@@ -1,10 +1,10 @@
-<HTML>
-<HEAD>
-	<TITLE>Dashboard</TITLE>
-	<link rel="stylesheet" href="static/css/dashboard.css">
-</HEAD>
-<BODY>
-	
+<html>
+<head>
+<link rel="stylesheet" href="static/css/dashboard.css">
+</head>
+<body>
+
+    
     <input type="checkbox" id="nav-toggle">
     <div class="sidebar">
         <div class="sidebar-brand">
@@ -20,40 +20,24 @@
                 <span>Dashboard</span>
               </a>
             </li>
-            <li>
-              <a href="#">
-                <span class="fas fa-users" ></span>
-                <span>Customers</span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="fas fa-stream"></span>
-              <span>Projects</span>
-              </a>
-            </li>
+            
             <li>
               <a href="#">
                 <span class="fas fa-shopping-cart"></span>
-                <span>Orders</span>
+                <span>Recent Search</span>
               </a>
             </li>
             <li>
               <a href="#">
                 <span class="fas fa-boxes"></span>
-                <span>Inventory</span>
+                <span>View Record</span>
               </a>
             </li>
-            <li>
-              <a href="#">
-                <span class="fas fa-user-circle"></span>
-                <span>Accounts</span>
-              </a>
-            </li>
+            
             <li>
               <a href="#">
                 <span class="fas fa-tasks"></span>
-                <span>Task</span>
+                <span>Upgrade Plan</span>
               </a>
             </li>
           </ul>
@@ -65,21 +49,17 @@
       <header>
         <h2>
           <label for="nav-toggle">
-            <span class="fas fa-bars"></span>
+            <span class="fas fa-bars">=</span>
           </label>
           Dashboard
         </h2>
 
-        <div class="search-wrapper">
-          <span class="fas fa-search"> </span>
-          <input type="search" placeholder="Search..." />
-
-        </div>
+       
 
         <div class="user-wrapper">
+         <img src="https://bit.ly/3bvT89p" width="40px" height="40px" alt="profile-img">
          <div class="">
             <h4>{{Username}}</h4>
-            <small>{{Subscription_type}}</small>
          </div>
         </div>
       </header>
@@ -88,8 +68,8 @@
         <div class="cards">
           <div class="card-single">
             <div>
-              <h1>50</h1>
-              <span>Customers</span>
+              
+              <span>Upgrade Now</span>
             </div>
             <div>
               <span class="fas fa-users"></span>
@@ -97,8 +77,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>12</h1>
-              <span>Projects</span>
+              <span>Upgrade Now</span>
             </div>
             <div>
               <span class="fas fa-clipboard-list"></span>
@@ -106,8 +85,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>15</h1>
-              <span>Orders</span>
+              <span>Upgrade Now</span>
             </div>
             <div>
               <span class="fas fa-shopping-cart"></span>
@@ -115,8 +93,8 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>$50K</h1>
-              <span>Income</span>
+              <h1>{{Subscription_type}}</h1>
+              <span>Member since : {{Creation_Date}}</span>
             </div>
             <div>
               <span class="fas fa-wallet"></span>
@@ -129,7 +107,7 @@
           <div class="projects">
             <div class="card">
               <div class="card-header">
-                <h2>Recent Projects</h2>
+                <h2>View New Contact</h2>
                 <button>See all <span class="fas fa-arrow-right"></span> </button>
               </div>
               <div class="card-body">
@@ -137,9 +115,9 @@
                   <table width="100%">
                   <thead>
                     <tr>
-                      <td>Project Title</td>
-                      <td>Department</td>
-                      <td>Status</td>
+                      <td>Name</td>
+                      <td>Location</td>
+                      <td>Action</td>
 
                     </tr>
                   </thead>
@@ -148,40 +126,35 @@
                       <td>Website</td>
                       <td>Frontend</td>
                       <td>
-                        <span class="status purple"></span>
-                        Review
+                        <button class="btn">View </button> 
                       </td>
                     </tr>
                     <tr>
                       <td>Website</td>
                       <td>Frontend</td>
                       <td>
-                        <span class="status orange"></span>
-                        Pending
+                        <button class="btn">View </button>
                       </td>
                     </tr>
                     <tr>
                       <td>Website</td>
                       <td>Frontend</td>
                       <td>
-                        <span class="status pink"></span>
-                        In Progress
+                        <button class="btn">View </button>
                       </td>
                     </tr>
                     <tr>
                       <td>Website</td>
                       <td>Frontend</td>
                       <td>
-                        <span class="status purple"></span>
-                        Review
+                        <button class="btn">View </button>
                       </td>
                     </tr>
                     <tr>
                       <td>Website</td>
                       <td>Frontend</td>
                       <td>
-                        <span class="status pink"></span>
-                        In Progress
+                        <button class="btn">View </button>
                       </td>
                     </tr>
                   </tbody>
@@ -193,10 +166,14 @@
             </div>
 
           </div>
+
+          <!--view contact-->
+          
+          <!--view contact end-->
           <div class="customers">
             <div class="card">
               <div class="card-header">
-                  <h2>New Customers</h2>
+                  <h2>Recent Search</h2>
                   <button>See all <span class="fas fa-arrow-right"></span> </button>
               </div>
               <div class="card-body">
@@ -309,5 +286,5 @@
     </div>
 
 
-</BODY>
-</HTML>
+</body>
+</html>
