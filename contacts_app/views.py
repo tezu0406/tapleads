@@ -44,7 +44,6 @@ def registration(request):
 
     if form.is_valid():
       user = form.save()
-      print(user)
       loginUser(request, user)
       return redirect("/dashboard_free")
     else:
@@ -163,6 +162,6 @@ def dashboard_free(request):
 
   users=User.objects.all()
   contacts=Contact.objects.all()
-  Subscription_type=request.session.get('Subscription_type')
-  return render(request,'dashboard_free.html', {'users':users,'Username':request.user.username,'Subscription_type':Subscription_type})      
+  subscription_type=request.session.get('subscription_type')
+  return render(request,'dashboard_free.html', {'users':users,'username':request.user.username,'subscription_type':subscription_type})      
     

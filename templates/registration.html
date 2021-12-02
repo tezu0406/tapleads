@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" href="static/css/reg.css">
+<!--<link rel="stylesheet" href="static/css/reg.css">-->
 
 
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -22,20 +22,75 @@
 	<p class="text-center">Get started with your free account</p>
 	<form action="" method='POST'>
 		{% csrf_token %}
-		{{ form.as_p }}
-		{{ RegistrationForm }}   
+		<div class="form-group input-group">
+			<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-user"></i> </span>
+		 	</div>
+        	{{ form.name }}
+    	</div> <!-- form-group// -->
+    	<div class="form-group input-group">
+    		<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+		 	</div>
+        	{{ form.user_email }}
+    	</div> <!-- form-group// -->
+    	<div class="form-group input-group">
+    		<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+			</div>
+			{{ form.user_phone }}
+    	</div> <!-- form-group// -->
+    	<div class="form-group input-group">
+    		<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-user"></i> </span>
+		    </div>
+    		{{ form.subscription_type }}
+    
+		</div> <!-- form-group end.// -->
+    	<div class="form-group input-group">
+    		<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-user"></i> </span>
+			</div>
+        	{{ form.username }}
+    	</div> <!-- form-group// -->
+    	<div class="form-group input-group">
+    		<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+			</div>
+        	{{ form.password1 }}
+    	</div> <!-- form-group// -->        
+
+    	<div class="form-group input-group">
+    		<div class="input-group-prepend">
+		    	<span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+			</div>
+        	{{ form.password2 }}
+    	</div>
+ 		 <!-- form-group// -->                               
+    	<div class="form-group">
         	<button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
     	</div> <!-- form-group// -->      
-    	<p class="text-center">Have an account? <a href="login.html">Log In</a> </p>                                                                 
+    	<p class="text-center">Have an account? <a href="/">Log In</a> </p>                                                                 
 	</form>
 	</article>
 	</div> <!-- card.// -->
 
 </div> 
-<!--container end.//-->
-
 <br><br>
 
 {% endblock %}
+
+<script>
+		
+		var form_fields = document.getElementsByTagName('input')
+		form_fields[1].placeholder='Username..';
+		form_fields[2].placeholder='Email..';
+		form_fields[3].placeholder='Enter password...';
+		form_fields[4].placeholder='Re-enter Password...';
+
+
+		for (var field in form_fields){	
+			form_fields[field].className += ' form-control'
+		}
 </body>
 </html>

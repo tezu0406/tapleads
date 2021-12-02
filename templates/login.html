@@ -1,3 +1,5 @@
+
+
 <html>
 <head>
 <link rel="stylesheet" href="static/css/login.css">
@@ -5,17 +7,25 @@
 </head>
 <body>
 {% block content %}
+{% if form.errors %}
+<p class="text-warning"> Your username and/or password didn't match </p>
+{% endif%}
 
 <div class="card">
-   <h2 class="title"> Log in</h2>
-   <form action="" method="POST">
+   <form action="" method='POST'>
       {% csrf_token %}
-      {{ form.as_p }}
+      <h2 class="title"> Log in</h2>
+      <p class="subtitle">Don't have an account? <a href="registration"> sign Up</a></p>
 
-      <p class="subtitle">Don't have an account? <a href="registration"> Sign Up</a></p>
 
+      <div class="email-login">
+         <label for="email"> <b>Username</b></label>
+         {{ form.username }}
+         <label for="psw"><b>Password</b></label>
+         {{ form.password }}
+      </div>
       <button class="cta-btn" type="submit">Log In</button>
-
+      <a class="forget-pass" href="#">Forgot password?</a>
    </form>
 </div>
 {% endblock %}
