@@ -11,5 +11,6 @@ urlpatterns = [
     path('registration',views.registration, name='registration'),
     path('addrecord',views.add_record, name='add_record'),
     path('dashboard_free',views.dashboard_free,name='Dashboard_free'),
-    path('importrecord',views.import_record,name="import_record"),
+    path('dashboard_free/importrecord',views.import_record,name="file"),
+    path('dashboard_free/importrecord/import',views.import_contacts,name="import_contacts")
 ]
