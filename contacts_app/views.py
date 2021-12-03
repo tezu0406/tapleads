@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm
+from django.db import transaction
 from django.contrib.auth import authenticate, login as loginUser, logout
 import pandas as pd
 import time
@@ -145,37 +146,45 @@ def add_record(request):
   return render(request,'add_record.html')
     
 
+   
 #ADD NEW 
-df=""
+df=''
 col=""
 def import_record(request):
    user_id=request.session.get('_auth_user_id')
    
    if user_id == None:
-    print("yes")
+  
     return redirect('/')
    if request.method=='POST':
-        print("yes")
+       
         global pd,df,col
         
         file = request.POST.get('file')
         d=pd.read_csv(file)
         df=pd.DataFrame(d)
+        print(type(df))
         df["No_record"]="NAN"
         col=list(d.columns)
+       
+       
         
-        return redirect('importrecord/import')
+        return redirect('/import')
    return render(request,'importrecord.html')
-     
+@transaction.atomic  
 def import_contacts(request):
   global pd,df,col
   user_id=request.session.get('_auth_user_id')
+  
+ 
+  
   if user_id == None:
     return redirect('/')
   if request.method=='POST':
     
     user = request.user
-    contact_type=request.POST.get('contact_type')
+    #contact_type=request.POST.get('contact_type')
+    
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
     middle_name=request.POST.get('middle_name')
@@ -211,12 +220,16 @@ def import_contacts(request):
     ctc=request.POST.get('ctc')
     notes=request.POST.get('notes')
     remarks=request.POST.get('remarks')
+    
+   
     for r in df.itertuples():
-        try:
+          print(getattr(r,full_name))
           contact=Contact(
-          contact_type=getattr(r,contact_type),
+          #contact_type=getattr(r,contact_type),
+          
           full_name=getattr(r,full_name),
           first_name=getattr(r,first_name),
+          
           middle_name=getattr(r,middle_name),
           last_name=getattr(r,last_name),
           company=getattr(r,company),
@@ -251,12 +264,13 @@ def import_contacts(request):
           notes=getattr(r,notes),
           remarks=getattr(r,remarks),
           user_id=user_id)
+
           contact.save()
-          return HttpResponse("Import successful! Click to go back to dashboard")
-        except Exception as e:
-          print("not run")  
-        return redirect ('/dashboard_free')
-  return render(request,'auto_record.html',{'col':col})
+          time.sleep(1)
+    return HttpResponse("data added !!")
+  return render(request,'auto_record.html',{'col':col})      
+        
+          
 
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
