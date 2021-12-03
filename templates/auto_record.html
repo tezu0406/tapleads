@@ -32,6 +32,7 @@
   <div class="form-container">
     <div class="tsb ">
       <form enctype="multipart/form-data" id="rp_471152" method="post" onsubmit="return rp_checkCaptcha('rp_471152');" class="needs-validation" novalidate="">
+        {% csrf_token %}
         <div class="tsb intro_text "></div>
         <input type="hidden" name="form-validated" id="form-validated" value="0">
         <h3>Applicant Information</h3>

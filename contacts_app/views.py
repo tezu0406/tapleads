@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,HttpResponse
-from contacts_app.models import Contact
+from contacts_app.models import Contact,Limit
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
@@ -214,47 +214,47 @@ def import_contacts(request):
     for r in df.itertuples():
         try:
           contact=Contact(
-          contact_type=getattr(r,contact_type),
-          full_name=getattr(r,full_name),
-          first_name=getattr(r,first_name),
-          middle_name=getattr(r,middle_name),
-          last_name=getattr(r,last_name),
-          company=getattr(r,company),
-          designation=getattr(r,designation),
-          emailid=getattr(r,emailid),
-          aadhar=getattr(r,aadhar),
-          pan_card=getattr(r,pan_card),
-          phone=getattr(r,phone),
-          location=getattr(r,location),
-          gender=getattr(r,gender),
-          title=getattr(r,title),
-          department=getattr(r,department),
-          university=getattr(r,university),
-          degree=getattr(r,degree),
-          passing_year=getattr(r,passing_year),
-          college=getattr(r,college),
-          linkedin=getattr(r,linkedin),
-          facebook=getattr(r,facebook),
-          instagram=getattr(r,instagram),
-          industry=getattr(r,industry),
-          country=getattr(r,country),
-          state=getattr(r,state),
-          pin_code=getattr(r,pin_code),
-          key_skills=getattr(r,key_skills),
-          total_experience=getattr(r,total_experience),
-          years_in_business=getattr(r,years_in_business),
-          cin_no=getattr(r,cin_no),
-          turnover=getattr(r,turnover),
-          date_of_incorporation=getattr(r,date_of_incorporation),
-          employees=getattr(r,employees),
-          ctc=getattr(r,ctc),
-          notes=getattr(r,notes),
-          remarks=getattr(r,remarks),
-          user_id=user_id)
+              contact_type=getattr(r,contact_type),
+              full_name=getattr(r,full_name),
+              first_name=getattr(r,first_name),
+              middle_name=getattr(r,middle_name),
+              last_name=getattr(r,last_name),
+              company=getattr(r,company),
+              designation=getattr(r,designation),
+              emailid=getattr(r,emailid),
+              aadhar=getattr(r,aadhar),
+              pan_card=getattr(r,pan_card),
+              phone=getattr(r,phone),
+              location=getattr(r,location),
+              gender=getattr(r,gender),
+              title=getattr(r,title),
+              department=getattr(r,department),
+              university=getattr(r,university),
+              degree=getattr(r,degree),
+              passing_year=getattr(r,passing_year),
+              college=getattr(r,college),
+              linkedin=getattr(r,linkedin),
+              facebook=getattr(r,facebook),
+              instagram=getattr(r,instagram),
+              industry=getattr(r,industry),
+              country=getattr(r,country),
+              state=getattr(r,state),
+              pin_code=getattr(r,pin_code),
+              key_skills=getattr(r,key_skills),
+              total_experience=getattr(r,total_experience),
+              years_in_business=getattr(r,years_in_business),
+              cin_no=getattr(r,cin_no),
+              turnover=getattr(r,turnover),
+              date_of_incorporation=getattr(r,date_of_incorporation),
+              employees=getattr(r,employees),
+              ctc=getattr(r,ctc),
+              notes=getattr(r,notes),
+              remarks=getattr(r,remarks),
+              user_id=user_id)
           contact.save()
           return HttpResponse("Import successful! Click to go back to dashboard")
         except Exception as e:
-          print("not run")  
+          print(e)  
         return redirect ('/dashboard_free')
   return render(request,'auto_record.html',{'col':col})
 
@@ -266,5 +266,85 @@ def dashboard_free(request):
   users=User.objects.all()
   contacts=Contact.objects.all()
   subscription_type=request.session.get('subscription_type')
-  return render(request,'dashboard_free.html', {'users':users,'username':request.user.username,'subscription_type':subscription_type})      
+
+  return render(request,'dashboard_free.html', {'users':users,
+                                                'username':request.user.username,
+                                                'subscription_type':subscription_type,
+                                                'date_joined':request.user.date_joined
+                                                })      
     
+
+def dashboard_paid(request):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+
+  users=User.objects.all()
+  contacts=Contact.objects.all()
+  limits=Limit.objects.all()
+  balance=request.session.get('balance')
+  total_limits=request.session.get('total_limits')
+  subscription_type=request.session.get('subscription_type')
+  full_name=request.session.get('full_name')
+  company=request.session.get('company')
+
+  return render(request,'dashboard_paid.html', {'users':users,
+                                                'username':request.user.username,
+                                                'subscription_type':subscription_type,
+                                                'date_joined':request.user.date_joined,
+                                                'balance':balance,
+                                                'total_limits':total_limits,
+                                                'full_name':full_name,
+                                                'company':company,
+                                                })
+
+
+def dashboard_admin(request):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+
+  users=User.objects.all()
+  contacts=Contact.objects.all()
+  limits=Limit.objects.all()
+  balance=request.session.get('balance')
+  total_limits=request.session.get('total_limits')
+  subscription_type=request.session.get('subscription_type')
+  full_name=request.session.get('full_name')
+  company=request.session.get('company')
+
+  return render(request,'dashboard_admin.html', {'users':users,
+                                                 'username':request.user.username,
+                                                 'subscription_type':subscription_type,
+                                                 'date_joined':request.user.date_joined,
+                                                 'balance':balance,
+                                                 'total_limits':total_limits,
+                                                 'full_name':full_name,
+                                                 'company':company,
+                                                 })
+
+
+def dashboard_superuser(request):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+
+  users=User.objects.all()
+  contacts=Contact.objects.all()
+  limits=Limit.objects.all()
+  balance=request.session.get('balance')
+  total_limits=request.session.get('total_limits')
+  subscription_type=request.session.get('subscription_type')
+  full_name=request.session.get('full_name')
+  company=request.session.get('company')
+
+
+  return render(request,'dashboard_superuser.html', {'users':users,
+                                                 'username':request.user.username,
+                                                 'subscription_type':subscription_type,
+                                                 'date_joined':request.user.date_joined,
+                                                 'balance':balance,
+                                                 'total_limits':total_limits,
+                                                 'full_name':full_name,
+                                                 'company':company,})
+

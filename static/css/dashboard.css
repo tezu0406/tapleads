@@ -172,6 +172,16 @@ main{
   padding: 2rem;
   border-radius: 12px;
 }
+
+.card-header button{
+  background: var(--main-color);
+  border-radius: 5px;
+  color: #fff;
+  font-size: .5rem;
+  padding: 10px 10px;
+  border:1px solid var(--main-color);
+}
+
 .card-single div:last-child span{
   color: var(--main-color);
   font-size: 3rem;
