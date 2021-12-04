@@ -4,8 +4,10 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm
+from django.db import transaction
 from django.contrib.auth import authenticate, login as loginUser, logout
 import pandas as pd
+import numpy as np
 import time
 
 # Create your views here.
@@ -145,37 +147,35 @@ def add_record(request):
   return render(request,'add_record.html')
     
 
+   
 #ADD NEW 
-df=""
+df=''
 col=""
 def import_record(request):
    user_id=request.session.get('_auth_user_id')
-   
    if user_id == None:
-    print("yes")
     return redirect('/')
    if request.method=='POST':
-        print("yes")
         global pd,df,col
-        
         file = request.POST.get('file')
         d=pd.read_csv(file)
         df=pd.DataFrame(d)
-        df["No_record"]="NAN"
-        col=list(d.columns)
-        
-        return redirect('importrecord/import')
+        df.insert(0, "choose options", np.nan)
+        col=list(df.columns)
+        for i in range(0,len(col)):
+          df=df.rename(columns={col[i]:"_".join(col[i].split())})
+        col=list(df.columns)
+        return redirect('/import')
    return render(request,'importrecord.html')
-     
+@transaction.atomic  
 def import_contacts(request):
   global pd,df,col
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
-  if request.method=='POST':
-    
+  if request.method=='POST': 
     user = request.user
-    contact_type=request.POST.get('contact_type')
+    #contact_type=request.POST.get('contact_type')
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
     middle_name=request.POST.get('middle_name')
@@ -212,8 +212,9 @@ def import_contacts(request):
     notes=request.POST.get('notes')
     remarks=request.POST.get('remarks')
     for r in df.itertuples():
-        try:
+          print(getattr(r,full_name))
           contact=Contact(
+<<<<<<< HEAD
               contact_type=getattr(r,contact_type),
               full_name=getattr(r,full_name),
               first_name=getattr(r,first_name),
@@ -257,6 +258,54 @@ def import_contacts(request):
           print(e)  
         return redirect ('/dashboard_free')
   return render(request,'auto_record.html',{'col':col})
+=======
+          #contact_type=getattr(r,contact_type),
+          
+          full_name=getattr(r,full_name),
+          first_name=getattr(r,first_name),
+          
+          middle_name=getattr(r,middle_name),
+          last_name=getattr(r,last_name),
+          company=getattr(r,company),
+          designation=getattr(r,designation),
+          emailid=getattr(r,emailid),
+          aadhar=getattr(r,aadhar),
+          pan_card=getattr(r,pan_card),
+          phone=getattr(r,phone),
+          location=getattr(r,location),
+          gender=getattr(r,gender),
+          title=getattr(r,title),
+          department=getattr(r,department),
+          university=getattr(r,university),
+          degree=getattr(r,degree),
+          passing_year=getattr(r,passing_year),
+          college=getattr(r,college),
+          linkedin=getattr(r,linkedin),
+          facebook=getattr(r,facebook),
+          instagram=getattr(r,instagram),
+          industry=getattr(r,industry),
+          country=getattr(r,country),
+          state=getattr(r,state),
+          pin_code=getattr(r,pin_code),
+          key_skills=getattr(r,key_skills),
+          total_experience=getattr(r,total_experience),
+          years_in_business=getattr(r,years_in_business),
+          cin_no=getattr(r,cin_no),
+          turnover=getattr(r,turnover),
+          date_of_incorporation=getattr(r,date_of_incorporation),
+          employees=getattr(r,employees),
+          ctc=getattr(r,ctc),
+          notes=getattr(r,notes),
+          remarks=getattr(r,remarks),
+          user_id=user_id)
+          contact.save()
+          time.sleep(0)
+    return redirect('/view')
+    #return HttpResponse("data added !!")
+  return render(request,'auto_record.html',{'col':col})  
+        
+          
+>>>>>>> 687ef78bdb3010fd19db2d02343277a72bf27587
 
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
