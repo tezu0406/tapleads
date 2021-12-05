@@ -43,6 +43,7 @@ class Contact(models.Model):
 	notes=models.CharField(max_length=200, null=True)
 	remarks=models.CharField(max_length=200, null=True)
 	status=models.CharField(max_length=200, null=True)
+ 
 	
 class UserData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

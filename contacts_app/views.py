@@ -371,7 +371,7 @@ def dashboard_redirect(request):
         return redirect('/')
       
   group = request.user.groups.filter(user=request.user)[0]
-  if group.name=="free_ubscriber":
+  if group.name=="free_subscriber":
       return redirect('/dashboard_free')
   elif group.name=="paid_subscriber":
       return redirect('/dashboard_paid')
@@ -390,7 +390,8 @@ def record_show(request):
   user_id=request.session.get('_auth_user_id')
   s_search=SaveSearch.objects.all()[::-5]
   group = request.user.groups.filter(user=request.user)[0] 
-  sub_type='paid_subscriber'
+  sub_type=str(group.name)
+  print(sub_type)
   contacts=Contact.objects.all()
   return render(request,'view_records.html',{'contacts':contacts,'sub_type':sub_type,'save':s_search})
   
