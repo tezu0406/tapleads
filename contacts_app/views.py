@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,HttpResponse
-from contacts_app.models import Contact,Limit,UserData
+from contacts_app.models import Contact,Limit,UserData,View,Limit,SaveSearch
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm
@@ -68,6 +68,7 @@ def add_record(request):
     return redirect('/')
   if request.method=='POST':
     user = request.user
+    status="view"
     contact_type=request.POST.get('contact_type')
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
@@ -143,6 +144,7 @@ def add_record(request):
           ctc=ctc,
           notes=notes,
           remarks=remarks,
+          status=status,
           user_id=user_id)
       contact.save()
       return HttpResponse("Import successful! Click to go back to dashboard")
@@ -170,7 +172,7 @@ def import_record(request):
         for i in range(0,len(col)):
           df=df.rename(columns={col[i]:"_".join(col[i].split())})
         col=list(df.columns)
-        return redirect('/dashboard_free/importrecord/import')
+        return redirect('/dashboard_redirect/importrecord/import')
    return render(request,'importrecord.html')
 
 @transaction.atomic  
@@ -180,6 +182,7 @@ def import_contacts(request):
   if user_id == None:
     return redirect('/')
   if request.method=='POST':
+    status="view"
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
     middle_name=request.POST.get('middle_name')
@@ -253,6 +256,7 @@ def import_contacts(request):
           ctc=getattr(r,ctc),
           notes=getattr(r,notes),
           remarks=getattr(r,remarks),
+          status=status,
           user_id=user_id)
           print(contact.__dict__)
           contact.save()
@@ -308,7 +312,7 @@ def dashboard_admin(request):
 
   users=UserData.objects.all()
   contacts=Contact.objects.all()
-  limits=Limit.objects.all()
+  limits=View.objects.all()
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
   subscription_type=request.session.get('subscription_type')
@@ -367,4 +371,45 @@ def dashboard_redirect(request):
     return render(request,"dashboard_superuser.html")
   
   
+# new
+#view records
+#sub_type=input("Enter a type=")
+
+sub_type='paid'
+def record_show(request):
+  user_id=request.session.get('_auth_user_id')
+  s_search=SaveSearch.objects.all()[::-5]
   
+  contacts=Contact.objects.all()
+  return render(request,'view_records.html',{'contacts':contacts,'sub_type':sub_type,'save':s_search})
+  
+total_limit=100
+def limit_data(request,id):
+  user_id=request.session.get('_auth_user_id')
+  global total_limit,View
+  view=1
+  
+  total_limit=int(total_limit)-int(view)
+  u=request.user
+  view=View(user=u,view_contact=int(id))
+  contact=Contact.objects.get(id=id)
+  contact.status="Viewed"
+  contact.save()
+  view.save()
+  return redirect('/dashboard_admin/view')
+
+
+def save_search(request):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+  if request.method=='POST':
+    u=request.user
+    save_search=request.POST.get('save_search')
+    save=SaveSearch(user=u,search_criteria=save_search)
+    save.save()
+    return redirect('/dashboard_admin/view')
+  return redirect('/dashboard_admin/view')
+
+
+
