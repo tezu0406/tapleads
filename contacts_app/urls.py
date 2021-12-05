@@ -16,6 +16,10 @@ urlpatterns = [
     path('dashboard_paid',views.dashboard_paid,name='dashboard_paid'),
     path('dashboard_admin',views.dashboard_admin,name='dashboard_admin'),
     path('dashboard_superuser',views.dashboard_superuser,name='dashboard_superuser'),
-    path('dashboard_free/importrecord',views.import_record,name="file"),
-    path('dashboard_free/importrecord/import',views.import_contacts,name="import_contacts")
+    path('dashboard_redirect/importrecord',views.import_record,name="file"),
+    
+    path('dashboard_redirect/importrecord/import',views.import_contacts,name="import_contacts"),
+    path('dashboard_admin/view',views.record_show,name="data"),
+    path('dashboard_admin/view/viewed/<id>',views.limit_data,name="data"),
+    path('done',views.save_search,name="data"),
 ]
