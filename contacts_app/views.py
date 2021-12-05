@@ -1,11 +1,8 @@
 from django.shortcuts import render,redirect,HttpResponse
-<<<<<<< HEAD
 from contacts_app.decorators import unauthenticated_user
 from contacts_app.models import Contact,Limit,UserData
 from django.contrib import messages
-=======
 from contacts_app.models import Contact,Limit,UserData,View,Limit,SaveSearch
->>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -268,7 +265,7 @@ def import_contacts(request):
   return render(request,'auto_record.html',{'col':col})  
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['Free Subscriber','SuperUser'])
+@allowed_users(allowed_roles=['free_subscriber','SuperUser'])
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
@@ -286,7 +283,7 @@ def dashboard_free(request):
     
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['Paid Subscriber','SuperUser'])
+@allowed_users(allowed_roles=['paid_subscriber','SuperUser'])
 def dashboard_paid(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
@@ -321,12 +318,8 @@ def dashboard_admin(request):
   users=UserData.objects.get(user_id=user_id)
   print(users)
   contacts=Contact.objects.all()
-<<<<<<< HEAD
   limits=Limit.objects.all()
   username=request.session.get('username')
-=======
-  limits=View.objects.all()
->>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
 
@@ -375,41 +368,29 @@ def dashboard_superuser(request):
 def dashboard_redirect(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
-<<<<<<< HEAD
         return redirect('/')
       
   group = request.user.groups.filter(user=request.user)[0]
-  if group.name=="Free Subscriber":
+  if group.name=="free_ubscriber":
       return redirect('/dashboard_free')
-  elif group.name=="Paid Subscriber":
+  elif group.name=="paid_subscriber":
       return redirect('/dashboard_paid')
   elif group.name=="Admin":
       return redirect('/dashboard_admin')
   elif group.name=="SuperUser":
         return redirect('/dashboard_superuser')  
   
-=======
-    return redirect('/')
-  subscription_type=request.session.get('subscription_type')
-  if subscription_type=="free":
-    return render(request,"dashboard_free.html")
-  elif subscription_type=="paid":
-    return render(request,"dashboard_paid.html")
-  elif subscription_type=="admin":
-    return render(request,"dashboard_admin.html")
-  else:
-    return render(request,"dashboard_superuser.html")
-  
   
 # new
 #view records
 #sub_type=input("Enter a type=")
 
-sub_type='paid'
+
 def record_show(request):
   user_id=request.session.get('_auth_user_id')
   s_search=SaveSearch.objects.all()[::-5]
-  
+  group = request.user.groups.filter(user=request.user)[0] 
+  sub_type='paid_subscriber'
   contacts=Contact.objects.all()
   return render(request,'view_records.html',{'contacts':contacts,'sub_type':sub_type,'save':s_search})
   
@@ -442,5 +423,3 @@ def save_search(request):
   return redirect('/dashboard_admin/view')
 
 
-
->>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb

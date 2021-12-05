@@ -40,7 +40,7 @@
 <div class="con mx-2">
 	<table class=" table table-striped order-table">
 		
-		{% if sub_type == 'free' %}
+		{% if sub_type == 'free_subscriber' %}
 		<thead>
 			<tr>
 				<th>full_name</th>
@@ -128,7 +128,7 @@
 		{% endfor %}
 
 
-		{% elif sub_type == 'paid' or sub_type == 'admin' %}
+		{% elif sub_type == 'paid_subscriber' or sub_type == 'Admin' %}
 		<thead>
 			<tr>
 				<th>full_name</th>
