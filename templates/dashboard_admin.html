@@ -21,9 +21,15 @@
               </a>
             </li>
             <li>
-              <a href="#">
+              <a href="/dashboard_redirect/importrecord">
                 <span class="fas fa-users" ></span>
                 <span>Import Records</span>
+              </a>
+            </li>
+            <li>
+              <a href="dashboard_admin/view">
+                <span class="fas fa-users" ></span>
+                <span>View Contacts</span>
               </a>
             </li>
             <li>
@@ -38,6 +44,7 @@
                 <span>Scoring</span>
               </a>
             </li>
+
             <li>
               <a href="#">
                 <span class="fas fa-boxes"></span>
@@ -133,9 +140,27 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
+<<<<<<< HEAD
                   <table width="100%">>
                   <tbody>
                     {% for row in Contact %}
+=======
+                  <table width="100%">
+                  <thead>
+                    <tr>
+                      <td>Name</td>
+                      <td>Company</td>
+                      <td>Action</td>
+
+                    </tr>
+                  </thead>
+                <tbody>
+                  {% for row in viewed %}
+                  <tr>
+                    <td>{{row.full_name}}</td>
+                  </tr>
+                      <!--{% for row in Contact %}
+>>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb
                       {% for i in '012'|make_list %}
                       <tr>
                         <td>{{ row.full_name }} </td>
@@ -144,6 +169,7 @@
                           <button class="btn">View </button> 
                         </td>
                       </tr>
+                      {% endfor %}-->
                       {% endfor %}
                     {% endfor %}
                   </tbody>

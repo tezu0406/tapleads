@@ -1,7 +1,11 @@
 from django.shortcuts import render,redirect,HttpResponse
+<<<<<<< HEAD
 from contacts_app.decorators import unauthenticated_user
 from contacts_app.models import Contact,Limit,UserData
 from django.contrib import messages
+=======
+from contacts_app.models import Contact,Limit,UserData,View,Limit,SaveSearch
+>>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -65,6 +69,7 @@ def add_record(request):
     return redirect('/')
   if request.method=='POST':
     user = request.user
+    status="view"
     contact_type=request.POST.get('contact_type')
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
@@ -140,6 +145,7 @@ def add_record(request):
           ctc=ctc,
           notes=notes,
           remarks=remarks,
+          status=status,
           user_id=user_id)
       contact.save()
       return HttpResponse("Import successful! Click to go back to dashboard")
@@ -167,7 +173,7 @@ def import_record(request):
         for i in range(0,len(col)):
           df=df.rename(columns={col[i]:"_".join(col[i].split())})
         col=list(df.columns)
-        return redirect('/dashboard_free/importrecord/import')
+        return redirect('/dashboard_redirect/importrecord/import')
    return render(request,'importrecord.html')
 
 
@@ -179,6 +185,7 @@ def import_contacts(request):
   if user_id == None:
     return redirect('/')
   if request.method=='POST':
+    status="view"
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
     middle_name=request.POST.get('middle_name')
@@ -252,6 +259,7 @@ def import_contacts(request):
           ctc=getattr(r,ctc),
           notes=getattr(r,notes),
           remarks=getattr(r,remarks),
+          status=status,
           user_id=user_id)
           print(contact.__dict__)
           contact.save()
@@ -313,8 +321,12 @@ def dashboard_admin(request):
   users=UserData.objects.get(user_id=user_id)
   print(users)
   contacts=Contact.objects.all()
+<<<<<<< HEAD
   limits=Limit.objects.all()
   username=request.session.get('username')
+=======
+  limits=View.objects.all()
+>>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
 
@@ -363,6 +375,7 @@ def dashboard_superuser(request):
 def dashboard_redirect(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
+<<<<<<< HEAD
         return redirect('/')
       
   group = request.user.groups.filter(user=request.user)[0]
@@ -375,3 +388,59 @@ def dashboard_redirect(request):
   elif group.name=="SuperUser":
         return redirect('/dashboard_superuser')  
   
+=======
+    return redirect('/')
+  subscription_type=request.session.get('subscription_type')
+  if subscription_type=="free":
+    return render(request,"dashboard_free.html")
+  elif subscription_type=="paid":
+    return render(request,"dashboard_paid.html")
+  elif subscription_type=="admin":
+    return render(request,"dashboard_admin.html")
+  else:
+    return render(request,"dashboard_superuser.html")
+  
+  
+# new
+#view records
+#sub_type=input("Enter a type=")
+
+sub_type='paid'
+def record_show(request):
+  user_id=request.session.get('_auth_user_id')
+  s_search=SaveSearch.objects.all()[::-5]
+  
+  contacts=Contact.objects.all()
+  return render(request,'view_records.html',{'contacts':contacts,'sub_type':sub_type,'save':s_search})
+  
+total_limit=100
+def limit_data(request,id):
+  user_id=request.session.get('_auth_user_id')
+  global total_limit,View
+  view=1
+  
+  total_limit=int(total_limit)-int(view)
+  u=request.user
+  view=View(user=u,view_contact=int(id))
+  contact=Contact.objects.get(id=id)
+  contact.status="Viewed"
+  contact.save()
+  view.save()
+  return redirect('/dashboard_admin/view')
+
+
+def save_search(request):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+  if request.method=='POST':
+    u=request.user
+    save_search=request.POST.get('save_search')
+    save=SaveSearch(user=u,search_criteria=save_search)
+    save.save()
+    return redirect('/dashboard_admin/view')
+  return redirect('/dashboard_admin/view')
+
+
+
+>>>>>>> 720e2d8fb2ffa036377e7b05bcce85e094ebcadb

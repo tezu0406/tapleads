@@ -42,6 +42,7 @@ class Contact(models.Model):
 	ctc=models.CharField(max_length=200, null=True)
 	notes=models.CharField(max_length=200, null=True)
 	remarks=models.CharField(max_length=200, null=True)
+	status=models.CharField(max_length=200, null=True)
 	
 class UserData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -69,7 +70,7 @@ class View(models.Model):
 	view_contact=models.CharField(max_length=200)
 	
 	def __str__(self):
-             return "%d" % (self.view_contact)
+             return "%s" % (self.view_contact)
 
 class Score(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
