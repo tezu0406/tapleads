@@ -21,9 +21,15 @@
               </a>
             </li>
             <li>
-              <a href="#">
+              <a href="/dashboard_redirect/importrecord">
                 <span class="fas fa-users" ></span>
                 <span>Import Records</span>
+              </a>
+            </li>
+            <li>
+              <a href="dashboard_admin/view">
+                <span class="fas fa-users" ></span>
+                <span>View Contacts</span>
               </a>
             </li>
             <li>
@@ -38,6 +44,7 @@
                 <span>Scoring</span>
               </a>
             </li>
+
             <li>
               <a href="#">
                 <span class="fas fa-boxes"></span>
@@ -136,8 +143,12 @@
 
                     </tr>
                   </thead>
-                  <tbody>
-                    {% for row in Contact %}
+                <tbody>
+                  {% for row in viewed %}
+                  <tr>
+                    <td>{{row.full_name}}</td>
+                  </tr>
+                      <!--{% for row in Contact %}
                       {% for i in '012'|make_list %}
                       <tr>
                         <td>{{ row.full_name }} </td>
@@ -146,6 +157,7 @@
                           <button class="btn">View </button> 
                         </td>
                       </tr>
+                      {% endfor %}-->
                       {% endfor %}
                     {% endfor %}
                   </tbody>
