@@ -1,0 +1,288 @@
+<html>
+<head>
+<!--<link rel="stylesheet" href="static/css/import.css">-->
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<style>
+	table{
+		font-size:15px;
+		
+	}
+	#history{
+		background-color:#FAEBD7;
+		width:40%;
+		padding:0px 10px 0px;
+	}
+	#input{
+		font-weight:bold;
+
+	}
+</style>
+</head>
+<body>
+<section class="container">
+
+	<h2>View All Conatct</h2>
+	<br>
+    <form action="/done" method="POST">
+	<input type="search" id="input" class="light-table-filter input-group" data-table="order-table" placeholder="Search Record" name="save_search">
+	<br>
+	{%for save in save%}
+	<p  value=5 onclick="s()" id="history">{{save.search_criteria}}</p>
+	{%endfor%}
+	<input type="submit" class="btn btn-dark" data-table="order-table" placeholder="Save Search">
+	</form>
+<br><br></section>
+<div class="con mx-2">
+	<table class=" table table-striped order-table">
+		
+		{% if sub_type == 'free' %}
+		<thead>
+			<tr>
+				<th>full_name</th>
+				<th>first_name</th>
+				<th>middle_name</th>
+				<th>last_name</th>
+				<th>company</th>
+				<th>designation</th>
+				<!--<th>emailid</th>-->
+				<th>aadhar</th>
+				<th>pan_card</th>
+				<!--<th>phone</th>-->
+				<th>location</th>
+				<th>gender</th>
+				<th>title</th>
+				<th>department</th>
+				<th>university</th>
+				<th>degree</th>
+				<th>passing_year</th>
+				<th>college</th>
+				<th>linkedin</th>
+				<th>facebook</th>
+				<th>instagram</th>
+				<th>industry</th>
+				<th>country</th>
+				<th>pin_code</th>
+				<th>key_skills</th>
+				<th>total_experience</th>
+				<th>years_in_business</th>
+				<th>cin_no</th>
+				<th>turnover</th>
+				<th>date_of_incorporation</th>
+				<th>employees</th>
+				<th>ctc</th>
+				<th>notes</th>
+				<th>remarks</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		{% for contacts in contacts %}
+		<tbody>
+			<tr>
+				<td>{{contacts.full_name}}</td>
+				<td>{{contacts.first_name}}</td>
+				<td>{{contacts.middle_name}}</td>
+				<td>{{contacts.last_name}}</td>
+				<td>{{contacts.company}}</td>
+				<td>{{contacts.designation}}</td>
+				<!--<td>{{contacts.emailid}}</td>-->
+				<td>{{contacts.aadhar}}</td>
+				<td>{{contacts.pan_card}}</td>
+				<td>{{contacts.location}}</td>
+				<td>{{contacts.gender}}</td>
+				<td>{{contacts.title}}</td>
+				<td>{{contacts.department}}</td>
+				<td>{{contacts.university}}</td>
+				<td>{{contacts.passing_year}}</td>
+				<td>{{contacts.college}}</td>
+				<td>{{contacts.linkedin}}</td>
+				<td>{{contacts.facebook}}</td>
+				<td>{{contacts.instagram}}</td>
+
+				<td>{{contacts.industry}}</td>
+				<td>{{contacts.country}}</td>
+				<td>{{contacts.state}}</td>
+				<td>{{contacts.pin_code}}</td>
+				<td>{{contacts.key_skills}}</td>
+
+				<td>{{contacts.total_experience}}</td>
+				<td>{{contacts.years_in_business}}</td>
+				<td>{{contacts.cin_no}}</td>
+				<td>{{contacts.turnover}}</td>
+				<td>{{contacts.date_of_incorporation}}</td>
+
+				<td>{{contacts.employees}}</td>
+				<td>{{contacts.ctc}}</td>
+				<td>{{contacts.notes}}</td>
+				<td>{{contacts.remarks}}</td>
+
+				<td><button>Paid</button></td>
+			</tr>
+			
+
+		</tbody>
+		{% endfor %}
+
+
+		{% elif sub_type == 'paid' or sub_type == 'admin' %}
+		<thead>
+			<tr>
+				<th>full_name</th>
+				<th>first_name</th>
+				<th>middle_name</th>
+				<th>last_name</th>
+				<th>company</th>
+				<th>designation</th>
+				<th>emailid</th>
+				<th>aadhar</th>
+				<th>pan_card</th>
+				<th>phone</th>
+				<th>location</th>
+				<th>gender</th>
+				<th>title</th>
+				<th>department</th>
+				<th>university</th>
+				<th>degree</th>
+				<th>passing_year</th>
+				<th>college</th>
+				<th>linkedin</th>
+				<th>facebook</th>
+				<th>instagram</th>
+				<th>industry</th>
+				<th>country</th>
+				<th>pin_code</th>
+				<th>key_skills</th>
+				<th>total_experience</th>
+				<th>years_in_business</th>
+				<th>cin_no</th>
+				<th>turnover</th>
+				<th>date_of_incorporation</th>
+				<th>employees</th>
+				<th>ctc</th>
+				<th>notes</th>
+				<th>remarks</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		{% for contacts in contacts %}
+		<tbody>
+			<tr>
+				<td>{{contacts.full_name}}</td>
+				<td>{{contacts.first_name}}</td>
+				<td>{{contacts.middle_name}}</td>
+				<td>{{contacts.last_name}}</td>
+				<td>{{contacts.company}}</td>
+				<td>{{contacts.designation}}</td>
+				<td>{{contacts.emailid}}</td>
+				<td>{{contacts.aadhar}}</td>
+				<td>{{contacts.pan_card}}</td>
+				<td>{{contacts.phone}}</td>
+
+				<td>{{contacts.location}}</td>
+				<td>{{contacts.gender}}</td>
+				<td>{{contacts.title}}</td>
+				<td>{{contacts.department}}</td>
+				<td>{{contacts.university}}</td>
+				<td>{{contacts.passing_year}}</td>
+				<td>{{contacts.college}}</td>
+				<td>{{contacts.linkedin}}</td>
+				<td>{{contacts.facebook}}</td>
+				<td>{{contacts.instagram}}</td>
+
+				<td>{{contacts.industry}}</td>
+				<td>{{contacts.country}}</td>
+				<td>{{contacts.state}}</td>
+				<td>{{contacts.pin_code}}</td>
+				<td>{{contacts.key_skills}}</td>
+
+				<td>{{contacts.total_experience}}</td>
+				<td>{{contacts.years_in_business}}</td>
+				<td>{{contacts.cin_no}}</td>
+				<td>{{contacts.turnover}}</td>
+				<td>{{contacts.date_of_incorporation}}</td>
+
+				<td>{{contacts.employees}}</td>
+				<td>{{contacts.ctc}}</td>
+				<td>{{contacts.notes}}</td>
+				
+				<td>{{contacts.remarks}}</td>
+
+				<td><a href="view/viewed/{{contacts.id}}" class="btn btn-primary">{{contacts.status}}</a></td>
+			</tr>
+			
+
+		</tbody>
+		{% endfor %}
+		{% endif %}
+	</table>
+</div>
+		<!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+	
+
+
+
+
+
+
+
+<script>
+function s(){
+		var val=document.getElementById("history").innerHTML;
+		let input=document.getElementById("input").value=val;
+		
+	}
+(function(document) {
+	'use strict';
+
+	var LightTableFilter = (function(Arr) {
+
+		var _input;
+
+		function _onInputEvent(e) {
+			_input = e.target;
+			var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
+			Arr.forEach.call(tables, function(table) {
+				Arr.forEach.call(table.tBodies, function(tbody) {
+					Arr.forEach.call(tbody.rows, _filter);
+				});
+			});
+		}
+
+		function _filter(row) {
+			var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
+			row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
+		}
+
+		return {
+			init: function() {
+				var inputs = document.getElementsByClassName('light-table-filter');
+				Arr.forEach.call(inputs, function(input) {
+					input.oninput = _onInputEvent;
+				});
+			}
+		};
+	})(Array.prototype);
+
+	document.addEventListener('readystatechange', function() {
+		if (document.readyState === 'complete') {
+			LightTableFilter.init();
+		}
+	});
+
+})(document);
+</script>
+</body>
+</html>
