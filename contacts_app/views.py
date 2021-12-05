@@ -1,10 +1,14 @@
 from django.shortcuts import render,redirect,HttpResponse
+from contacts_app.decorators import unauthenticated_user
 from contacts_app.models import Contact,Limit,UserData
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from .decorators import allowed_users, unauthenticated_user
 from .forms import RegistrationForm
 from django.db import transaction
-from django.contrib.auth import authenticate, login as loginUser, logout
+from django.contrib.auth import authenticate, login as loginUser, logout as logoutUser
 import pandas as pd
 import numpy as np
 import time
@@ -13,55 +17,48 @@ import time
 def homepage(request):
   return render(request,"homepage.html")
 
+@unauthenticated_user
 def login(request):
-  user_id=request.session.get('_auth_user_id')
-  
-  if user_id != None:
-    return redirect('/dashboard_free')
-
-  if request.method == "POST":
-    form = AuthenticationForm(request, data=request.POST)
-    if form.is_valid():
-      username = form.cleaned_data.get('username')
-      password = form.cleaned_data.get('password')
-      user = authenticate(username=username, password=password)
-      if user is not None:
-        loginUser(request, user)
-        return redirect("/dashboard_redirect")
-  form = AuthenticationForm()
-  return render(request,"login.html",{"form":form})
+    if request.method == "POST":
+      form = AuthenticationForm(request, data=request.POST)
+      if form.is_valid():
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+          loginUser(request, user)
+          return redirect("/dashboard_redirect")
+    form = AuthenticationForm()
+    return render(request,"login.html",{"form":form})
 
 def logout(request):
-  request.session['Username']=None
+  logoutUser(request)
   return redirect('/')
 
+@unauthenticated_user
 def registration(request):
-  user_id=request.session.get('_auth_user_id')
+    if request.method=="POST":
+      form = RegistrationForm(request.POST)
 
-  if user_id != None:
-    return redirect('/')
-
-  if request.method=="POST":
-    form = RegistrationForm(request.POST)
-
-    if form.is_valid():
-      user = form.save()
-      name=request.POST.get('name')
-      email=request.POST.get('email')
-      phone_number=request.POST.get('phone_number')
-      subscription_type=request.POST.get('subscription_type')
-      user_data = UserData(user=user, name=name, phone_number=phone_number, subscription_type=subscription_type, email=email)
-      user_data.save()
-      loginUser(request, user)
-      return redirect("/dashboard_redirect")
-    else:
-      return render(request, 'registration.html', {'form': form})
-  
-  form = RegistrationForm()
-  return render(request,'registration.html',{'form':form})
+      if form.is_valid():
+        user = form.save()
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        phone_number=request.POST.get('phone_number')
+        subscription_type=request.POST.get('subscription_type')
+        user_data = UserData(user=user, name=name, phone_number=phone_number, subscription_type=subscription_type, email=email)
+        user_data.save()
+        messages.success(request,"Registration successful!")
+        return redirect("/login")
+      else:
+        return render(request, 'registration.html', {'form': form})
+    
+    form = RegistrationForm()
+    return render(request,'registration.html',{'form':form})
 
 
-
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin','SuperUser'])
 def add_record(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
@@ -152,7 +149,7 @@ def add_record(request):
   return render(request,'add_record.html')
     
 
-   
+
 #ADD NEW 
 df=''
 col=""
@@ -173,6 +170,8 @@ def import_record(request):
         return redirect('/dashboard_free/importrecord/import')
    return render(request,'importrecord.html')
 
+
+@allowed_users(allowed_roles=['Admin','SuperUser'])
 @transaction.atomic  
 def import_contacts(request):
   global pd,df,col
@@ -260,12 +259,14 @@ def import_contacts(request):
     return redirect('/view')
   return render(request,'auto_record.html',{'col':col})  
 
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Free Subscriber','SuperUser'])
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
 
-  users=UserData.objects.all()
+  users=UserData.objects.get(user_id=user_id)
   contacts=Contact.objects.all()
   subscription_type=request.session.get('subscription_type')
 
@@ -276,12 +277,14 @@ def dashboard_free(request):
                                                 })      
     
 
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Paid Subscriber','SuperUser'])
 def dashboard_paid(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
 
-  users=UserData.objects.all()
+  users=UserData.objects.get(user_id=user_id)
   contacts=Contact.objects.all()
   limits=Limit.objects.all()
   balance=request.session.get('balance')
@@ -291,7 +294,6 @@ def dashboard_paid(request):
   company=request.session.get('company')
 
   return render(request,'dashboard_paid.html', {'users':users,
-                                                'username':request.user.username,
                                                 'subscription_type':subscription_type,
                                                 'date_joined':request.user.date_joined,
                                                 'balance':balance,
@@ -301,23 +303,26 @@ def dashboard_paid(request):
                                                 })
 
 
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin','SuperUser'])
 def dashboard_admin(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
 
-  users=UserData.objects.all()
+  users=UserData.objects.get(user_id=user_id)
+  print(users)
   contacts=Contact.objects.all()
   limits=Limit.objects.all()
+  username=request.session.get('username')
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
-  subscription_type=request.session.get('subscription_type')
+
   full_name=request.session.get('full_name')
   company=request.session.get('company')
 
   return render(request,'dashboard_admin.html', {'users':users,
-                                                 'username':request.user.username,
-                                                 'subscription_type':subscription_type,
+                                                 'username':request.user,
                                                  'date_joined':request.user.date_joined,
                                                  'balance':balance,
                                                  'total_limits':total_limits,
@@ -326,14 +331,17 @@ def dashboard_admin(request):
                                                  })
 
 
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['SuperUser'])
 def dashboard_superuser(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
 
-  users=UserData.objects.all()
+  users=UserData.objects.get(user_id=user_id)
   contacts=Contact.objects.all()
   limits=Limit.objects.all()
+  username=request.session.get('username')
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
   subscription_type=request.session.get('subscription_type')
@@ -342,7 +350,7 @@ def dashboard_superuser(request):
 
 
   return render(request,'dashboard_superuser.html', {'users':users,
-                                                 'username':request.user.username,
+                                                 'username':username,
                                                  'subscription_type':subscription_type,
                                                  'date_joined':request.user.date_joined,
                                                  'balance':balance,
@@ -355,16 +363,15 @@ def dashboard_superuser(request):
 def dashboard_redirect(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
-    return redirect('/')
-  subscription_type=request.session.get('subscription_type')
-  if subscription_type=="free":
-    return render(request,"dashboard_free.html")
-  elif subscription_type=="paid":
-    return render(request,"dashboard_paid.html")
-  elif subscription_type=="admin":
-    return render(request,"dashboard_admin.html")
-  else:
-    return render(request,"dashboard_superuser.html")
-  
-  
+        return redirect('/')
+      
+  group = request.user.groups.filter(user=request.user)[0]
+  if group.name=="Free Subscriber":
+      return redirect('/dashboard_free')
+  elif group.name=="Paid Subscriber":
+      return redirect('/dashboard_paid')
+  elif group.name=="Admin":
+      return redirect('/dashboard_admin')
+  elif group.name=="SuperUser":
+        return redirect('/dashboard_superuser')  
   

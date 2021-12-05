@@ -29,7 +29,7 @@
             <li>
               <a href="#">
                 <span class="fas fa-users" ></span>
-                <span>Search Contacts</span>
+                <span>View Records</span>
               </a>
             </li>
             <li>
@@ -41,7 +41,7 @@
             <li>
               <a href="#">
                 <span class="fas fa-boxes"></span>
-                <span>Saved Contacts</span>
+                <span>Saved Searches</span>
               </a>
             </li>
             
@@ -49,6 +49,12 @@
               <a href="#">
                 <span class="fas fa-tasks"></span>
                 <span>Export Contacts</span>
+              </a>
+            </li>
+            <li>
+              <a href="/logout">
+                <span class="fas fa-tasks"></span>
+                <span>Logout</span>
               </a>
             </li>
           </ul>
@@ -70,7 +76,7 @@
         <div class="user-wrapper">
          <img src="https://bit.ly/3bvT89p" width="40px" height="40px" alt="profile-img">
          <div class="">
-            <h4>{{ username }}</h4>
+            <h4>{{ request.user }}</h4>
             
            
          </div>
@@ -108,7 +114,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>{{ subscription_type }} Subscriber</h1>
+              <h1>{{ users.subscription_type }} Subscriber</h1>
               <span>Member since : {{ date_joined }}</span>
             </div>
             <div>

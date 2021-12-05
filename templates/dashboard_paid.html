@@ -23,7 +23,7 @@
             <li>
               <a href="#">
                 <span class="fas fa-users" ></span>
-                <span>Search Contacts</span>
+                <span>View Records</span>
               </a>
             </li>
             <li>
@@ -35,7 +35,7 @@
             <li>
               <a href="#">
                 <span class="fas fa-boxes"></span>
-                <span>Saved Contacts</span>
+                <span>Saved Searches</span>
               </a>
             </li>
             
@@ -43,6 +43,12 @@
               <a href="#">
                 <span class="fas fa-tasks"></span>
                 <span>Export Contacts</span>
+              </a>
+            </li>
+            <li>
+              <a href="logout">
+                <span class="fas fa-tasks"></span>
+                <span>Logout</span>
               </a>
             </li>
           </ul>
@@ -64,7 +70,7 @@
         <div class="user-wrapper">
          <img src="https://bit.ly/3bvT89p" width="40px" height="40px" alt="profile-img">
          <div class="">
-            <h4>{{ username }}</h4>
+            <h4>{{ request.user }}</h4>
             
            
          </div>
@@ -75,7 +81,7 @@
         <div class="cards">
           <div class="card-single">
             <div>
-              <h1>{{ total_limit }}</h1>
+              <h1>{{ limits.total_limit }}</h1>
               <span>Limits</span>
             </div>
             <div>
@@ -84,7 +90,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>{{ balance }}</h1>
+              <h1>{{ limits.balance }}</h1>
               <span>Balance</span>
             </div>
             <div>
@@ -102,7 +108,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>{{ subscription_type }} Subscriber</h1>
+              <h1>{{ users.subscription_type }} Subscriber</h1>
               <span>Member since : {{ date_joined }}</span>
             </div>
             <div>
@@ -116,20 +122,12 @@
           <div class="projects">
             <div class="card">
               <div class="card-header">
-                <h2>Saved Contacts</h2>
+                <h2>Saved Searches</h2>
                 <button>See all <span class="fas fa-arrow-right"></span> </button>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table width="100%">
-                  <thead>
-                    <tr>
-                      <td>Name</td>
-                      <td>Company</td>
-                      <td>Action</td>
-
-                    </tr>
-                  </thead>
                   <tbody>
                     {% for row in Contact %}
                       {% for i in '012'|make_list %}

@@ -29,7 +29,13 @@
             <li>
               <a href="#">
                 <span class="fas fa-boxes"></span>
-                <span>Search Contacts</span>
+                <span>View Records</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="fas fa-boxes"></span>
+                <span>Saved Searches</span>
               </a>
             </li>
             
@@ -64,7 +70,7 @@
         <div class="user-wrapper">
          <img src="https://bit.ly/3bvT89p" width="40px" height="40px" alt="profile-img">
          <div class="">
-            <h4>{{username}}</h4>
+            <h4>{{ request.user }}</h4>
          </div>
         </div>
       </header>
@@ -99,8 +105,8 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>{{subscription_type}} Subscriber</h1>
-              <span>Member since : {{date_joined}}</span>
+              <h1>{{ users.subscription_type }} Subscriber</h1>
+              <span>Member since : {{ date_joined }}</span>
             </div>
             <div>
               <span class="fas fa-wallet"></span>
@@ -113,20 +119,12 @@
           <div class="projects">
             <div class="card">
               <div class="card-header">
-                <h2 name="saved">Saved Contacts</h2>
+                <h2 name="saved">Saved Searches</h2>
                 <button>See all <span class="fas fa-arrow-right"></span> </button>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table width="100%">
-                  <thead>
-                    <tr>
-                      <td>Name</td>
-                      <td>Company</td>
-                      <td>Action</td>
-
-                    </tr>
-                  </thead>
                   <tbody>
                     {% for row in Contact %}
                       {% for i in '012'|make_list %}

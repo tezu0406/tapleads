@@ -24,6 +24,10 @@
          <label for="psw"><b>Password</b></label>
          {{ form.password }}
       </div>
+      {{ form.errors }}
+      {% for message in messages %}
+         <p> {{ message }} </p>
+      {% endfor %}
       <button class="cta-btn" type="submit">Log In</button>
       <a class="forget-pass" href="#">Forgot password?</a>
    </form>
