@@ -1,6 +1,5 @@
 from django.shortcuts import render,redirect,HttpResponse
-from contacts_app.models import Contact,Limit
-from datetime import datetime
+from contacts_app.models import Contact,Limit,UserData
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm
@@ -28,7 +27,7 @@ def login(request):
       user = authenticate(username=username, password=password)
       if user is not None:
         loginUser(request, user)
-        return redirect("/dashboard_free")
+        return redirect("/dashboard_redirect")
   form = AuthenticationForm()
   return render(request,"login.html",{"form":form})
 
@@ -47,8 +46,14 @@ def registration(request):
 
     if form.is_valid():
       user = form.save()
+      name=request.POST.get('name')
+      email=request.POST.get('email')
+      phone_number=request.POST.get('phone_number')
+      subscription_type=request.POST.get('subscription_type')
+      user_data = UserData(user=user, name=name, phone_number=phone_number, subscription_type=subscription_type, email=email)
+      user_data.save()
       loginUser(request, user)
-      return redirect("/dashboard_free")
+      return redirect("/dashboard_redirect")
     else:
       return render(request, 'registration.html', {'form': form})
   
@@ -143,7 +148,7 @@ def add_record(request):
       return HttpResponse("Import successful! Click to go back to dashboard")
     except Exception as e:
       print(e)  
-      return redirect ('/dashboard_free')
+      return redirect ('/dashboard_redirect')
   return render(request,'add_record.html')
     
 
@@ -157,25 +162,24 @@ def import_record(request):
     return redirect('/')
    if request.method=='POST':
         global pd,df,col
-        file = request.POST.get('file')
+        file = request.POST.get('file')        
         d=pd.read_csv(file)
         df=pd.DataFrame(d)
-        df.insert(0, "choose options", np.nan)
+        df.insert(0, "choose options", None)
         col=list(df.columns)
         for i in range(0,len(col)):
           df=df.rename(columns={col[i]:"_".join(col[i].split())})
         col=list(df.columns)
-        return redirect('/import')
+        return redirect('/dashboard_free/importrecord/import')
    return render(request,'importrecord.html')
+
 @transaction.atomic  
 def import_contacts(request):
   global pd,df,col
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
-  if request.method=='POST': 
-    user = request.user
-    #contact_type=request.POST.get('contact_type')
+  if request.method=='POST':
     full_name=request.POST.get('full_name')
     first_name=request.POST.get('first_name')
     middle_name=request.POST.get('middle_name')
@@ -214,56 +218,8 @@ def import_contacts(request):
     for r in df.itertuples():
           print(getattr(r,full_name))
           contact=Contact(
-<<<<<<< HEAD
-              contact_type=getattr(r,contact_type),
-              full_name=getattr(r,full_name),
-              first_name=getattr(r,first_name),
-              middle_name=getattr(r,middle_name),
-              last_name=getattr(r,last_name),
-              company=getattr(r,company),
-              designation=getattr(r,designation),
-              emailid=getattr(r,emailid),
-              aadhar=getattr(r,aadhar),
-              pan_card=getattr(r,pan_card),
-              phone=getattr(r,phone),
-              location=getattr(r,location),
-              gender=getattr(r,gender),
-              title=getattr(r,title),
-              department=getattr(r,department),
-              university=getattr(r,university),
-              degree=getattr(r,degree),
-              passing_year=getattr(r,passing_year),
-              college=getattr(r,college),
-              linkedin=getattr(r,linkedin),
-              facebook=getattr(r,facebook),
-              instagram=getattr(r,instagram),
-              industry=getattr(r,industry),
-              country=getattr(r,country),
-              state=getattr(r,state),
-              pin_code=getattr(r,pin_code),
-              key_skills=getattr(r,key_skills),
-              total_experience=getattr(r,total_experience),
-              years_in_business=getattr(r,years_in_business),
-              cin_no=getattr(r,cin_no),
-              turnover=getattr(r,turnover),
-              date_of_incorporation=getattr(r,date_of_incorporation),
-              employees=getattr(r,employees),
-              ctc=getattr(r,ctc),
-              notes=getattr(r,notes),
-              remarks=getattr(r,remarks),
-              user_id=user_id)
-          contact.save()
-          return HttpResponse("Import successful! Click to go back to dashboard")
-        except Exception as e:
-          print(e)  
-        return redirect ('/dashboard_free')
-  return render(request,'auto_record.html',{'col':col})
-=======
-          #contact_type=getattr(r,contact_type),
-          
           full_name=getattr(r,full_name),
           first_name=getattr(r,first_name),
-          
           middle_name=getattr(r,middle_name),
           last_name=getattr(r,last_name),
           company=getattr(r,company),
@@ -298,21 +254,18 @@ def import_contacts(request):
           notes=getattr(r,notes),
           remarks=getattr(r,remarks),
           user_id=user_id)
+          print(contact.__dict__)
           contact.save()
           time.sleep(0)
     return redirect('/view')
-    #return HttpResponse("data added !!")
   return render(request,'auto_record.html',{'col':col})  
-        
-          
->>>>>>> 687ef78bdb3010fd19db2d02343277a72bf27587
 
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
 
-  users=User.objects.all()
+  users=UserData.objects.all()
   contacts=Contact.objects.all()
   subscription_type=request.session.get('subscription_type')
 
@@ -328,7 +281,7 @@ def dashboard_paid(request):
   if user_id == None:
     return redirect('/')
 
-  users=User.objects.all()
+  users=UserData.objects.all()
   contacts=Contact.objects.all()
   limits=Limit.objects.all()
   balance=request.session.get('balance')
@@ -353,7 +306,7 @@ def dashboard_admin(request):
   if user_id == None:
     return redirect('/')
 
-  users=User.objects.all()
+  users=UserData.objects.all()
   contacts=Contact.objects.all()
   limits=Limit.objects.all()
   balance=request.session.get('balance')
@@ -378,7 +331,7 @@ def dashboard_superuser(request):
   if user_id == None:
     return redirect('/')
 
-  users=User.objects.all()
+  users=UserData.objects.all()
   contacts=Contact.objects.all()
   limits=Limit.objects.all()
   balance=request.session.get('balance')
@@ -397,3 +350,21 @@ def dashboard_superuser(request):
                                                  'full_name':full_name,
                                                  'company':company,})
 
+
+
+def dashboard_redirect(request):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+  subscription_type=request.session.get('subscription_type')
+  if subscription_type=="free":
+    return render(request,"dashboard_free.html")
+  elif subscription_type=="paid":
+    return render(request,"dashboard_paid.html")
+  elif subscription_type=="admin":
+    return render(request,"dashboard_admin.html")
+  else:
+    return render(request,"dashboard_superuser.html")
+  
+  
+  

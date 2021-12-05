@@ -37,13 +37,18 @@ class Contact(models.Model):
 	years_in_business=models.CharField(max_length=200, null=True)
 	cin_no=models.CharField(max_length=200, null=True)
 	turnover=models.CharField(max_length=200,default="0", null=True)
-	date_of_incorporation=models.DateField(null=True)
+	date_of_incorporation=models.CharField(max_length=200,null=True)
 	employees=models.CharField(max_length=200, null=True)
 	ctc=models.CharField(max_length=200, null=True)
 	notes=models.CharField(max_length=200, null=True)
 	remarks=models.CharField(max_length=200, null=True)
 	
-	
+class UserData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name=models.CharField(max_length=200, null=True)
+    email = models.EmailField()
+    subscription_type = models.CharField(max_length=200, null=True)
+    phone_number = models.CharField(max_length=13, null=True)
 
 class SaveSearch(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)

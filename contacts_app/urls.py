@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout',views.logout,name='logout'),
     path('registration',views.registration, name='registration'),
     path('addrecord',views.add_record, name='add_record'),
+    path('dashboard_redirect',views.dashboard_redirect,name='dashboard_redirect'),
     path('dashboard_free',views.dashboard_free,name='dashboard_free'),
     path('dashboard_paid',views.dashboard_paid,name='dashboard_paid'),
     path('dashboard_admin',views.dashboard_admin,name='dashboard_admin'),
