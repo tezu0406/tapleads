@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate, login as loginUser, logout as logo
 import pandas as pd
 import numpy as np
 import time
+import csv
 
 # Create your views here.
 def homepage(request):
@@ -479,15 +480,15 @@ def Export(request):
         writer.writerow(['Employee Detail'])       
                  
          
-        writer.writerow(['full_name','phone'])
+        writer.writerow(['full_name','first_name','middle_name','last_name','company','designation','emailid','aadhar','pan_card'	,'phone','location',	'gender','title',	'department','university','degree','	passing_year','college','linkedin','facebook','instagram','industry','country','pin_code','key_skills','total_experience','years_in_business','cin_no',	'turnover','date_of_incorporation','employees','ctc','notes','remarks'])
         
         users=[]
         for i in new_id:
-            users.extend(Contact.objects.filter(id=int(i)).values_list('full_name','phone'))
-        print(users)
+            users.extend(Contact.objects.filter(id=int(i)).values_list('full_name','first_name',	'middle_name',	'last_name','company','designation','emailid','aadhar','pan_card'	,'phone','location',	'gender','title',	'department','university','degree','passing_year','college','linkedin','facebook','instagram','industry','country','pin_code','key_skills','total_experience','years_in_business','cin_no',	'turnover','date_of_incorporation','employees','ctc','notes','remarks'))
+        
         for user in users:
             writer.writerow(user)
         return response
         
  
-  return render(request, 'add_record.html')
+  return render(request, 'view_records.html')
