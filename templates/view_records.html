@@ -35,6 +35,7 @@
 	<p  value=5 onclick="s()" id="history">{{save.search_criteria}}</p>
 	{%endfor%}
 	<input type="submit" class="btn btn-dark" data-table="order-table" placeholder="Save Search">
+	    <a href="Export" class="btn btn-primary">Export Contact</a>
 	</form>
 <br><br></section>
 <div class="con mx-2">
@@ -120,7 +121,7 @@
 				<td>{{contacts.notes}}</td>
 				<td>{{contacts.remarks}}</td>
 
-				<td><button>Paid</button></td>
+				<td><a href="#" class="btn btn-primary">paid</a></td>
 			</tr>
 			
 
@@ -128,7 +129,7 @@
 		{% endfor %}
 
 
-		{% elif sub_type == 'paid_subscriber' or sub_type == 'Admin' %}
+		{% elif sub_type == 'paid_subscriber' or sub_type == 'Admin' or sub_type=='SuperUser' %}
 		<thead>
 			<tr>
 				<th>full_name</th>
