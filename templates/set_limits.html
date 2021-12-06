@@ -19,7 +19,7 @@
             </tr>
             <tr>
                 {% for row in UserData %}
-                <tr> 
+                {% if sub_type == 'paid' or sub_type == 'admin' %}
                     <td data-th ="User ID"> {{ row.user_id }} </td>
                     <td data-th = "Username"> {{ request.user }} </td>
                     <td data-th = "Subscription Type"> {{ row.sub_type }} </td>
@@ -27,7 +27,7 @@
                     <td data-th = "Balance"> {{ row.balance }} </td>
                     <td data-th = "Action">  </td>
                     <td data-th = "Set"><a href="set_limits/{{users.user_id}}" class="btn btn-primary">{{limits.total_limits}}</a></td>
-                </tr>
+                {% endif %}
                 {% endfor %}
             </tr>
             </tbody>

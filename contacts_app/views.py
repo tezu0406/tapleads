@@ -343,22 +343,12 @@ def dashboard_superuser(request):
 
   users=UserData.objects.get(user_id=user_id)
   contacts=Contact.objects.all()
-  username=request.session.get('username')
-  balance=request.session.get('balance')
-  total_limits=request.session.get('total_limits')
   subscription_type=request.session.get('subscription_type')
-  full_name=request.session.get('full_name')
-  company=request.session.get('company')
 
 
   return render(request,'dashboard_superuser.html', {'users':users,
-                                                 'username':username,
                                                  'subscription_type':subscription_type,
-                                                 'date_joined':request.user.date_joined,
-                                                 'balance':balance,
-                                                 'total_limits':total_limits,
-                                                 'full_name':full_name,
-                                                 'company':company,})
+                                                 'date_joined':request.user.date_joined,})
 
 
 
@@ -457,7 +447,7 @@ def Export(request):
 
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['SuperUser'])
-def set_limits(request,user_id):
+def set_limits(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
     return redirect('/')
@@ -465,7 +455,7 @@ def set_limits(request,user_id):
   total_limits=request.session.get('total_limits')
   balance=request.session.get('balance')
   users=UserData.objects.get(user_id=user_id)
-  sub_type=request.session.get('subscripton_type')
+  sub_type=str(group.name)
   return render(request,'set_limits.html', {'users':users,
                                             'total_limits':total_limits,
                                             'sub_type':sub_type,

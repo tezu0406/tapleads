@@ -26,6 +26,5 @@ urlpatterns = [
     path('dashboard_paid/Export',views.Export,name="data"),
     path('dashboard_superuser/Export',views.Export,name="data"),
     path('done',views.save_search,name="data"),
-    path('set_limits/<user_id>',views.set_limits,name="set_limits"),
-
+    path('set_limits',views.set_limits,name="set_limits"),
 ]
