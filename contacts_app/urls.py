@@ -20,5 +20,12 @@ urlpatterns = [
     path('dashboard_redirect/importrecord/import',views.import_contacts,name="import_contacts"),
     path('dashboard_admin/view',views.record_show,name="data"),
     path('dashboard_admin/view/viewed/<id>',views.limit_data,name="data"),
+    path('dashboard_paid/view/viewed/<id>',views.limit_data,name="data"),
+    path('dashboard_superuser/view/viewed/<id>',views.limit_data,name="data"),
+    path('dashboard_admin/Export',views.Export,name="data"),
+    path('dashboard_paid/Export',views.Export,name="data"),
+    path('dashboard_superuser/Export',views.Export,name="data"),
     path('done',views.save_search,name="data"),
+    path('set_limits/<user_id>',views.set_limits,name="set_limits"),
+   
 ]

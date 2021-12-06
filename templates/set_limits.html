@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <title>Set Limits</title>
+        <link rel="stylesheet" href="static/css/set_limits.css"> 
+    </head>
+    <body>    
+    <div class="container">
+        <h1>Set Limits</h1>
+        <table class="rwd-table">
+            <tbody>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Subscription Type</th>
+                <th>Total Limits</th>
+                <th>Balance</th>
+                <th>Action</th>
+                <th>Set</th>
+            </tr>
+            <tr>
+                {% for row in UserData %}
+                <tr> 
+                    <td data-th ="User ID"> {{ row.user_id }} </td>
+                    <td data-th = "Username"> {{ request.user }} </td>
+                    <td data-th = "Subscription Type"> {{ row.sub_type }} </td>
+                    <td data-th = "Total Limits"> {{ row.total_limits }} </td>
+                    <td data-th = "Balance"> {{ row.balance }} </td>
+                    <td data-th = "Action">  </td>
+                    <td data-th = "Set"><a href="set_limits/{{users.user_id}}" class="btn btn-primary">{{limits.total_limits}}</a></td>
+                </tr>
+                {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </body>
+</html>

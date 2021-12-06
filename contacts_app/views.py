@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect,HttpResponse
 from contacts_app.decorators import unauthenticated_user
-from contacts_app.models import Contact,Limit,UserData
+from contacts_app.models import Contact,UserData
 from django.contrib import messages
-from contacts_app.models import Contact,Limit,UserData,View,Limit,SaveSearch
+from contacts_app.models import Contact,UserData,View,SaveSearch
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -291,7 +291,6 @@ def dashboard_paid(request):
 
   users=UserData.objects.get(user_id=user_id)
   contacts=Contact.objects.all()
-  limits=Limit.objects.all()
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
   subscription_type=request.session.get('subscription_type')
@@ -318,7 +317,6 @@ def dashboard_admin(request):
   users=UserData.objects.get(user_id=user_id)
   print(users)
   contacts=Contact.objects.all()
-  limits=Limit.objects.all()
   username=request.session.get('username')
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
@@ -345,7 +343,6 @@ def dashboard_superuser(request):
 
   users=UserData.objects.get(user_id=user_id)
   contacts=Contact.objects.all()
-  limits=Limit.objects.all()
   username=request.session.get('username')
   balance=request.session.get('balance')
   total_limits=request.session.get('total_limits')
@@ -385,7 +382,7 @@ def dashboard_redirect(request):
 #view records
 #sub_type=input("Enter a type=")
 
-
+@login_required(login_url="login")
 def record_show(request):
   user_id=request.session.get('_auth_user_id')
   s_search=SaveSearch.objects.all()[::-5]
@@ -411,6 +408,7 @@ def limit_data(request,id):
   return redirect('/dashboard_admin/view')
 
 
+@login_required(login_url="login")
 def save_search(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
@@ -424,3 +422,52 @@ def save_search(request):
   return redirect('/dashboard_admin/view')
 
 
+
+
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['SuperUser'])
+def set_limits(request,user_id):
+  user_id=request.session.get('_auth_user_id')
+  if user_id == None:
+    return redirect('/')
+  group = request.user.groups.filter(user=request.user)[0]
+  total_limits=request.session.get('total_limits')
+  balance=request.session.get('balance')
+  users=UserData.objects.get(user_id=user_id)
+  sub_type=request.session.get('subscripton_type')
+  return render(request,'set_limits.html', {'users':users,
+                                            'total_limits':total_limits,
+                                            'sub_type':sub_type,
+                                            'balance':balance
+                                            })
+
+  
+
+
+def Export(request):
+  ids=[]
+  
+  data=View.objects.all()
+  for i in data:
+    ids.append(i.view_contact)
+  new_id=set(ids)
+  if request.method != 'POST':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="TapLeads.csv"'        
+        writer = csv.writer(response)
+        writer.writerow(['Employee Detail'])       
+                 
+         
+        writer.writerow(['full_name','phone'])
+        
+        users=[]
+        for i in new_id:
+            users.extend(Contact.objects.filter(id=int(i)).values_list('full_name','phone'))
+        print(users)
+        for user in users:
+            writer.writerow(user)
+        return response
+        
+ 
+  return render(request, 'add_record.html')

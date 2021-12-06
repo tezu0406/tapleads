@@ -44,27 +44,22 @@ class Contact(models.Model):
 	remarks=models.CharField(max_length=200, null=True)
 	status=models.CharField(max_length=200, null=True)
  
+
 	
 class UserData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name=models.CharField(max_length=200, null=True)
     email = models.EmailField()
-    subscription_type = models.CharField(max_length=200, null=True)
+    subscription_type = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=13, null=True)
+    total_limits=models.CharField(max_length=5,null=True)
+    balance=models.CharField(max_length=5,null=True)
 
 class SaveSearch(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	search_criteria=models.CharField(max_length=200)
 
-	
-class Limit(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	total_limit=models.CharField(max_length=200)
-	validation_date=models.DateField()
-	balance=models.CharField(max_length=200)
-	
-	def __str__(self):
-             return "%d  %d" % (self.total_limit, self.balance)
+
 
 class View(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
