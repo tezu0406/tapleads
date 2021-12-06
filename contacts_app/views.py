@@ -423,4 +423,34 @@ def save_search(request):
     return redirect('/dashboard_admin/view')
   return redirect('/dashboard_admin/view')
 
+#Export Data
+def Export(request):
+  ids=[]
+  
+  data=View.objects.all()
+  for i in data:
+    ids.append(i.view_contact)
+  new_id=set(ids)
+  if request.method != 'POST':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="TapLeads.csv"'        
+        writer = csv.writer(response)
+        writer.writerow(['Contacts Details'])       
+                 
+        
+        writer.writerow(['full_name','first_name','middle_name','last_name','company','designation','emailid','aadhar','pan_card'	,'phone','location',	'gender','title',	'department','university','degree','	passing_year','college','linkedin','facebook','instagram','industry','country','pin_code','key_skills','total_experience','years_in_business','cin_no',	'turnover','date_of_incorporation','employees','ctc','notes','remarks'])
+        
+        users=[]
+        for i in new_id:
+            users.extend(Contact.objects.filter(id=int(i)).values_list('full_name','first_name',	'middle_name',	'last_name','company','designation','emailid','aadhar','pan_card'	,'phone','location',	'gender','title',	'department','university','degree','passing_year','college','linkedin','facebook','instagram','industry','country','pin_code','key_skills','total_experience','years_in_business','cin_no',	'turnover','date_of_incorporation','employees','ctc','notes','remarks'))
+        print(users)
+        for user in users:
+            writer.writerow(user)
+        return response
+        
+ 
+  return render(request, 'view_records.html')
+
+
+
 
