@@ -175,10 +175,10 @@ main{
 
 .card-header button{
   background: var(--main-color);
-  border-radius: 5px;
+  border-radius: 10px;
   color: #fff;
-  font-size: .5rem;
-  padding: 10px 10px;
+  font-size: .8rem;
+  padding: .5rem 1rem;
   border:1px solid var(--main-color);
 }
 

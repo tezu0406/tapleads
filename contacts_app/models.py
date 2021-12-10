@@ -45,16 +45,6 @@ class Contact(models.Model):
 	status=models.CharField(max_length=200, null=True)
  
 
-	
-class UserData(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name=models.CharField(max_length=200, null=True)
-    email = models.EmailField()
-    subscription_type = models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=13, null=True)
-    total_limits=models.CharField(max_length=5,null=True)
-    balance=models.CharField(max_length=5,null=True)
-
 class SaveSearch(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	search_criteria=models.CharField(max_length=200)
@@ -63,25 +53,37 @@ class SaveSearch(models.Model):
 
 class View(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	view_contact=models.CharField(max_length=200)
+	contact=models.ForeignKey(Contact, on_delete=models.CASCADE, default=None)
 	
 	def __str__(self):
-             return "%s" % (self.view_contact)
+             return "%s -> %s" % (self.user_id, self.contact_id) 
 
 class Score(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	method=models.CharField(max_length=200)
-	status=models.CharField(max_length=1)
-	creation_date=models.ForeignKey(User, related_name="creation_date_of_record",on_delete=models.CASCADE)
+	value = models.IntegerField(default=0)
+	contact = models.ForeignKey(Contact, on_delete=models.CASCADE, default=None)
 
 class Method(models.Model):
-	score=models.ForeignKey(Score, related_name="score_id_for_matrix", on_delete=models.CASCADE)
-	fields=models.CharField(max_length=200)
-	weightage=models.CharField(max_length=200)
-	
-	
-	
-	
-	
-	
+    owner=models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    type=models.CharField(max_length=10, default="predefined")
+    name=models.CharField(max_length=200)
 
+class Field(models.Model):
+    method=models.ForeignKey(Method, on_delete=models.CASCADE)
+    name=models.CharField(max_length=200)
+    weightage=models.IntegerField(default=0)
+
+    
+class UserData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name=models.CharField(max_length=200, null=True)
+    email = models.EmailField()
+    subscription_type = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=13, null=True)
+    total_limits=models.IntegerField(default=0)
+    viewed=models.IntegerField(default=0)
+    current_method=models.ForeignKey(Method, on_delete=models.CASCADE, default=None)
+    
+    def __str__(self):
+        return str(self.total_limits)
+	

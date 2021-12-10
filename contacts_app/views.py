@@ -1,8 +1,10 @@
+from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
 from django.shortcuts import render,redirect,HttpResponse
 from contacts_app.decorators import unauthenticated_user
-from contacts_app.models import Contact,UserData
+from contacts_app.models import Contact,UserData,Score
 from django.contrib import messages
-from contacts_app.models import Contact,UserData,View,SaveSearch
+from django.core import serializers
+from contacts_app.models import Contact,UserData,View,SaveSearch,Method,Field
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -14,6 +16,9 @@ import pandas as pd
 import numpy as np
 import time
 import csv
+import json
+from django.db.models import Q
+from .tasks import recalculate
 
 # Create your views here.
 def homepage(request):
@@ -180,8 +185,6 @@ def import_record(request):
 def import_contacts(request):
   global pd,df,col
   user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-    return redirect('/')
   if request.method=='POST':
     status="view"
     full_name=request.POST.get('full_name')
@@ -262,23 +265,16 @@ def import_contacts(request):
           print(contact.__dict__)
           contact.save()
           time.sleep(0)
-    return redirect('/view')
+    return redirect('/dashboard_redirect/view')
   return render(request,'auto_record.html',{'col':col})  
 
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['free_subscriber','SuperUser'])
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-    return redirect('/')
-
   users=UserData.objects.get(user_id=user_id)
-  contacts=Contact.objects.all()
-  subscription_type=request.session.get('subscription_type')
-
   return render(request,'dashboard_free.html', {'users':users,
                                                 'username':request.user.username,
-                                                'subscription_type':subscription_type,
                                                 'date_joined':request.user.date_joined
                                                 })      
     
@@ -287,51 +283,21 @@ def dashboard_free(request):
 @allowed_users(allowed_roles=['paid_subscriber','SuperUser'])
 def dashboard_paid(request):
   user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-    return redirect('/')
-
-  users=UserData.objects.get(user_id=user_id)
-  contacts=Contact.objects.all()
-  balance=request.session.get('balance')
-  total_limits=request.session.get('total_limits')
-  subscription_type=request.session.get('subscription_type')
-  full_name=request.session.get('full_name')
-  company=request.session.get('company')
-
-  return render(request,'dashboard_paid.html', {'users':users,
-                                                'subscription_type':subscription_type,
-                                                'date_joined':request.user.date_joined,
-                                                'balance':balance,
-                                                'total_limits':total_limits,
-                                                'full_name':full_name,
-                                                'company':company,
-                                                })
+  user_data=UserData.objects.get(user_id=user_id)
+  return render(request,'dashboard_paid.html', {'user_data':user_data,
+                                                'balance': user_data.total_limits - user_data.viewed,
+                                                'date_joined':request.user.date_joined})
 
 
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Admin','SuperUser'])
 def dashboard_admin(request):
   user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-    return redirect('/')
-
-  users=UserData.objects.get(user_id=user_id)
-  print(users)
-  contacts=Contact.objects.all()
-  username=request.session.get('username')
-  balance=request.session.get('balance')
-  total_limits=request.session.get('total_limits')
-
-  full_name=request.session.get('full_name')
-  company=request.session.get('company')
-
-  return render(request,'dashboard_admin.html', {'users':users,
+  user_data=UserData.objects.get(user_id=user_id)
+  return render(request,'dashboard_admin.html', {'user_data':user_data,
                                                  'username':request.user,
+                                                 'balance': user_data.total_limits - user_data.viewed,
                                                  'date_joined':request.user.date_joined,
-                                                 'balance':balance,
-                                                 'total_limits':total_limits,
-                                                 'full_name':full_name,
-                                                 'company':company,
                                                  })
 
 
@@ -339,17 +305,16 @@ def dashboard_admin(request):
 @allowed_users(allowed_roles=['SuperUser'])
 def dashboard_superuser(request):
   user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-    return redirect('/')
-
-  users=UserData.objects.get(user_id=user_id)
-  contacts=Contact.objects.all()
+  user_data=UserData.objects.get(user_id=user_id)
+  scores=Score.objects.all()
   subscription_type=request.session.get('subscription_type')
 
 
-  return render(request,'dashboard_superuser.html', {'users':users,
-                                                 'subscription_type':subscription_type,
-                                                 'date_joined':request.user.date_joined,})
+  return render(request,'dashboard_superuser.html', {'user_data':user_data,
+                                                     'scores':scores,
+                                                    'subscription_type':subscription_type,
+                                                    'balance': user_data.total_limits - user_data.viewed,
+                                                    'date_joined':request.user.date_joined,})
 
 
 
@@ -375,28 +340,35 @@ def dashboard_redirect(request):
 
 @login_required(login_url="login")
 def record_show(request):
-  user_id=request.session.get('_auth_user_id')
   s_search=SaveSearch.objects.all()[::-5]
-  group = request.user.groups.filter(user=request.user)[0] 
+  group = request.user.groups.filter(user=request.user)[0]
   sub_type=str(group.name)
-  print(sub_type)
-  contacts=Contact.objects.all()
-  return render(request,'view_records.html',{'contacts':contacts,'sub_type':sub_type,'save':s_search})
+  viewed=View.objects.filter(user=request.user)
+  scores=Score.objects.filter(user=request.user)
+  contacts = []
+  for contact in Contact.objects.all():
+        is_viewed = len(viewed.filter(contact_id=contact.id)) != 0
+        score = scores.filter(contact=contact).first()
+        if score != None:
+              score = score.value
+        else:
+              score = 0
+        contacts.append({'is_viewed': is_viewed, 'contact': contact, 'score': score})
+  return render(request,'view_records.html',{'contacts': contacts,'sub_type':sub_type,'save':s_search})
   
-total_limit=100
-def limit_data(request,id):
-  user_id=request.session.get('_auth_user_id')
-  global total_limit,View
-  view=1
-  
-  total_limit=int(total_limit)-int(view)
-  u=request.user
-  view=View(user=u,view_contact=int(id))
-  contact=Contact.objects.get(id=id)
-  contact.status="Viewed"
-  contact.save()
-  view.save()
-  return redirect('/dashboard_admin/view')
+
+def limit_data(request, id):
+  user = request.user
+  user_data=UserData.objects.get(user_id=user.id)
+  if(user_data.total_limits > user_data.viewed):   
+    contact=Contact.objects.get(id=id)
+    view = View(user=user, contact=contact)
+    view.save()
+    user_data.viewed += 1
+    user_data.save()
+  else:
+    return HttpResponse("You have used your allowed limit.")
+  return redirect('/dashboard_redirect/view')
 
 
 @login_required(login_url="login")
@@ -409,8 +381,8 @@ def save_search(request):
     save_search=request.POST.get('save_search')
     save=SaveSearch(user=u,search_criteria=save_search)
     save.save()
-    return redirect('/dashboard_admin/view')
-  return redirect('/dashboard_admin/view')
+    return redirect('/dashboard_redirect/view')
+  return redirect('/dashboard_redirect/view')
 
 #Export Data
 def Export(request):
@@ -418,7 +390,7 @@ def Export(request):
   
   data=View.objects.all()
   for i in data:
-    ids.append(i.view_contact)
+    ids.append(i.contact_id)
   new_id=set(ids)
   if request.method != 'POST':
         response = HttpResponse(content_type='text/csv')
@@ -432,7 +404,6 @@ def Export(request):
         users=[]
         for i in new_id:
             users.extend(Contact.objects.filter(id=int(i)).values_list('full_name','first_name',	'middle_name',	'last_name','company','designation','emailid','aadhar','pan_card'	,'phone','location',	'gender','title',	'department','university','degree','passing_year','college','linkedin','facebook','instagram','industry','country','pin_code','key_skills','total_experience','years_in_business','cin_no',	'turnover','date_of_incorporation','employees','ctc','notes','remarks'))
-        print(users)
         for user in users:
             writer.writerow(user)
         return response
@@ -443,35 +414,12 @@ def Export(request):
 
 
 
-
-
-
-@login_required(login_url="login")
-@allowed_users(allowed_roles=['SuperUser'])
-def set_limits(request):
-  user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-    return redirect('/')
-  group = request.user.groups.filter(user=request.user)[0]
-  total_limits=request.session.get('total_limits')
-  balance=request.session.get('balance')
-  users=UserData.objects.get(user_id=user_id)
-  sub_type=str(group.name)
-  return render(request,'set_limits.html', {'users':users,
-                                            'total_limits':total_limits,
-                                            'sub_type':sub_type,
-                                            'balance':balance
-                                            })
-
-  
-
-
 def Export(request):
   ids=[]
   
   data=View.objects.all()
   for i in data:
-    ids.append(i.view_contact)
+    ids.append(i.contact_id)
   new_id=set(ids)
   if request.method != 'POST':
         response = HttpResponse(content_type='text/csv')
@@ -492,3 +440,49 @@ def Export(request):
         
  
   return render(request, 'view_records.html')
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['SuperUser'])
+def set_limits(request):
+  if request.method =='POST':
+    user_data = UserData.objects.get(user_id = request.POST.get('user_id'))
+    user_data.total_limits = request.POST.get('total_limits')
+    user_data.save()
+  users = User.objects.all()
+  users_data = UserData.objects.all()
+  custom_users = []
+  for user in users:
+        custom_users.append({'user': user, 'data': users_data.get(user_id=user.id)})
+  return render(request,'set_limits.html', {'custom_users': custom_users})
+  
+  
+@login_required(login_url="login")
+def set_score(request):
+  user_data = UserData.objects.get(user=request.user)
+  methods = Method.objects.filter(Q(owner_id=None) | Q(owner_id=request.user.id))
+  if request.method == "POST":
+        data = json.loads(request.body)
+        method = Method(owner=request.user, type='userdefined', name=data['name'])
+        method.save()
+        for field in data['fields'].values():
+          Field(method=method, name=field['field'], weightage=field['weightage']).save()
+  return render(request,
+                "set_score.html",
+                {
+                  'current_method': user_data.current_method,
+                  'methods': serializers.serialize('json', methods)
+                }
+  )
+  
+def select(request):
+      if request.method =='POST':
+            method = request.POST.get('method')
+            user_data = UserData.objects.get(user=request.user)
+            user_data.current_method_id = method
+            user_data.save()
+            recalculate.apply_async([request.user.id])
+      return redirect('/set_score')
+
+def recalculate_score(request):
+  recalculate.apply_async([request.user.id])
+  return HttpResponse("Done")

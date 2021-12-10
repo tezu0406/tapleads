@@ -27,21 +27,15 @@
               </a>
             </li>
             <li>
-              <a href="dashboard_admin/view">
+              <a href="/addrecord">
+                <span class="fas fa-users" ></span>
+                <span>Add Records Manually</span>
+              </a>
+            </li>
+            <li>
+              <a href="dashboard_redirect/view">
                 <span class="fas fa-users" ></span>
                 <span>View Contacts</span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="fas fa-shopping-cart"></span>
-                <span>Scoring</span>
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <span class="fas fa-tasks"></span>
-                <span>Export Contacts</span>
               </a>
             </li>
             <li>
@@ -67,7 +61,6 @@
        
 
         <div class="user-wrapper">
-         <img src="https://bit.ly/3bvT89p" width="40px" height="40px" alt="profile-img">
          <div class="">
             <h4>{{ request.user }}</h4>
             
@@ -80,7 +73,7 @@
         <div class="cards">
           <div class="card-single">
             <div>
-              <h1>{{ total_limit }}</h1>
+              <h1>{{ user_data.total_limits }}</h1>
               <span>Limits</span>
             </div>
             <div>
@@ -99,7 +92,7 @@
           <div class="card-single">
             <div>
               <h2> Scoring type </h2>
-              <button> <span class="card-single button">Edit</span> </button>
+              <button><a href = "/set_score"><span class="card-single button">Edit</span> </a></button>
             </div>
             <div>
               <span class="fas fa-shopping-cart"></span>
@@ -107,7 +100,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>{{ users.subscription_type }} Subscriber</h1>
+              <h1>{{ user_data.subscription_type }} Subscriber</h1>
               <span>Member since : {{ date_joined }}</span>
             </div>
             <div>
@@ -116,18 +109,6 @@
           </div>
 
         </div>
-          <br>
-          <!--view contact-->
-          <div class="recent-grid2">
-            <div class="projects">
-              <div class="card">
-                <div class="card-header">
-                  <h2>Exported Contacts</h2>
-                  <button>See all <span class="fas fa-arrow-right"></span> </button>
-                </div>
-              </div>
-            </div>
-          </div>
           <br>
           <div class="recent-grid2">
           <div class="projects">

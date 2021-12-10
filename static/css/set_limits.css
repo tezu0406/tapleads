@@ -22,7 +22,7 @@
 }
 
 .rwd-table tr:nth-child(odd):not(:first-child) {
-  background-color: #ebf3f9;
+  background-color: #ffffff;
 }
 
 .rwd-table th {

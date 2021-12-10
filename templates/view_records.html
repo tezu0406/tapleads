@@ -39,7 +39,9 @@
 	{%endfor%}
 	<input type="submit" class="btn btn-dark" data-table="order-table" placeholder="Save Search">
 	    <a href="Export" class="btn btn-primary">Export Contact</a>
+		<a href = "/dashboard_redirect" class ="btn btn-primary">Back to Dashboard</a>
 	</form>
+	
 <br><br></section>
 <div class="con mx-2">
 	<table class=" table table-striped order-table">
@@ -81,48 +83,50 @@
 				<th>ctc</th>
 				<th>notes</th>
 				<th>remarks</th>
+				<th>score</th>
 				<th>Action</th>
 			</tr>
 		</thead>
-		{% for contacts in contacts %}
+		{% for contact in contacts %}
 		<tbody>
 			<tr>
-				<td>{{contacts.full_name}}</td>
-				<td>{{contacts.first_name}}</td>
-				<td>{{contacts.middle_name}}</td>
-				<td>{{contacts.last_name}}</td>
-				<td>{{contacts.company}}</td>
-				<td>{{contacts.designation}}</td>
-				<!--<td>{{contacts.emailid}}</td>-->
-				<td>{{contacts.aadhar}}</td>
-				<td>{{contacts.pan_card}}</td>
-				<td>{{contacts.location}}</td>
-				<td>{{contacts.gender}}</td>
-				<td>{{contacts.title}}</td>
-				<td>{{contacts.department}}</td>
-				<td>{{contacts.university}}</td>
-				<td>{{contacts.passing_year}}</td>
-				<td>{{contacts.college}}</td>
-				<td>{{contacts.linkedin}}</td>
-				<td>{{contacts.facebook}}</td>
-				<td>{{contacts.instagram}}</td>
+				<td>{{contact.contact.full_name}}</td>
+				<td>{{contact.contact.first_name}}</td>
+				<td>{{contact.contact.middle_name}}</td>
+				<td>{{contact.contact.last_name}}</td>
+				<td>{{contact.contact.company}}</td>
+				<td>{{contact.contact.designation}}</td>
+				<!--<td>{{contact.contact.emailid}}</td>-->
+				<td>{{contact.contact.aadhar}}</td>
+				<td>{{contact.contact.pan_card}}</td>
+				<td>{{contact.contact.location}}</td>
+				<td>{{contact.contact.gender}}</td>
+				<td>{{contact.contact.title}}</td>
+				<td>{{contact.contact.department}}</td>
+				<td>{{contact.contact.university}}</td>
+				<td>{{contact.contact.passing_year}}</td>
+				<td>{{contact.contact.college}}</td>
+				<td>{{contact.contact.linkedin}}</td>
+				<td>{{contact.contact.facebook}}</td>
+				<td>{{contact.contact.instagram}}</td>
 
-				<td>{{contacts.industry}}</td>
-				<td>{{contacts.country}}</td>
-				<td>{{contacts.state}}</td>
-				<td>{{contacts.pin_code}}</td>
-				<td>{{contacts.key_skills}}</td>
+				<td>{{contact.contact.industry}}</td>
+				<td>{{contact.contact.country}}</td>
+				<td>{{contact.contact.state}}</td>
+				<td>{{contact.contact.pin_code}}</td>
+				<td>{{contact.contact.key_skills}}</td>
 
-				<td>{{contacts.total_experience}}</td>
-				<td>{{contacts.years_in_business}}</td>
-				<td>{{contacts.cin_no}}</td>
-				<td>{{contacts.turnover}}</td>
-				<td>{{contacts.date_of_incorporation}}</td>
+				<td>{{contact.contact.total_experience}}</td>
+				<td>{{contact.contact.years_in_business}}</td>
+				<td>{{contact.contact.cin_no}}</td>
+				<td>{{contact.contact.turnover}}</td>
+				<td>{{contact.contact.date_of_incorporation}}</td>
 
-				<td>{{contacts.employees}}</td>
-				<td>{{contacts.ctc}}</td>
-				<td>{{contacts.notes}}</td>
-				<td>{{contacts.remarks}}</td>
+				<td>{{contact.contact.employees}}</td>
+				<td>{{contact.contact.ctc}}</td>
+				<td>{{contact.contact.notes}}</td>
+				<td>{{contact.contact.remarks}}</td>
+				<td>{{contact.score}}</td>
 
 				<td><a href="#" class="btn btn-primary">paid</a></td>
 			</tr>
@@ -169,53 +173,59 @@
 				<th>ctc</th>
 				<th>notes</th>
 				<th>remarks</th>
+				<th>score</th>
 				<th>Action</th>
 			</tr>
 		</thead>
-		{% for contacts in contacts %}
+		{% for contact in contacts %}
 		<tbody>
 			<tr>
-				<td>{{contacts.full_name}}</td>
-				<td>{{contacts.first_name}}</td>
-				<td>{{contacts.middle_name}}</td>
-				<td>{{contacts.last_name}}</td>
-				<td>{{contacts.company}}</td>
-				<td>{{contacts.designation}}</td>
-				<td>{{contacts.emailid}}</td>
-				<td>{{contacts.aadhar}}</td>
-				<td>{{contacts.pan_card}}</td>
-				<td>{{contacts.phone}}</td>
+				<td>{{contact.contact.full_name}}</td>
+				<td>{{contact.contact.first_name}}</td>
+				<td>{{contact.contact.middle_name}}</td>
+				<td>{{contact.contact.last_name}}</td>
+				<td>{{contact.contact.company}}</td>
+				<td>{{contact.contact.designation}}</td>
+				<td>{{contact.contact.emailid}}</td>
+				<td>{{contact.contact.aadhar}}</td>
+				<td>{{contact.contact.pan_card}}</td>
+				<td>{{contact.contact.phone}}</td>
 
-				<td>{{contacts.location}}</td>
-				<td>{{contacts.gender}}</td>
-				<td>{{contacts.title}}</td>
-				<td>{{contacts.department}}</td>
-				<td>{{contacts.university}}</td>
-				<td>{{contacts.passing_year}}</td>
-				<td>{{contacts.college}}</td>
-				<td>{{contacts.linkedin}}</td>
-				<td>{{contacts.facebook}}</td>
-				<td>{{contacts.instagram}}</td>
+				<td>{{contact.contact.location}}</td>
+				<td>{{contact.contact.gender}}</td>
+				<td>{{contact.contact.title}}</td>
+				<td>{{contact.contact.department}}</td>
+				<td>{{contact.contact.university}}</td>
+				<td>{{contact.contact.passing_year}}</td>
+				<td>{{contact.contact.college}}</td>
+				<td>{{contact.contact.linkedin}}</td>
+				<td>{{contact.contact.facebook}}</td>
+				<td>{{contact.contact.instagram}}</td>
 
-				<td>{{contacts.industry}}</td>
-				<td>{{contacts.country}}</td>
-				<td>{{contacts.state}}</td>
-				<td>{{contacts.pin_code}}</td>
-				<td>{{contacts.key_skills}}</td>
+				<td>{{contact.contact.industry}}</td>
+				<td>{{contact.contact.country}}</td>
+				<td>{{contact.contact.state}}</td>
+				<td>{{contact.contact.pin_code}}</td>
+				<td>{{contact.contact.key_skills}}</td>
 
-				<td>{{contacts.total_experience}}</td>
-				<td>{{contacts.years_in_business}}</td>
-				<td>{{contacts.cin_no}}</td>
-				<td>{{contacts.turnover}}</td>
-				<td>{{contacts.date_of_incorporation}}</td>
+				<td>{{contact.contact.total_experience}}</td>
+				<td>{{contact.contact.years_in_business}}</td>
+				<td>{{contact.contact.cin_no}}</td>
+				<td>{{contact.contact.turnover}}</td>
+				<td>{{contact.contact.date_of_incorporation}}</td>
 
-				<td>{{contacts.employees}}</td>
-				<td>{{contacts.ctc}}</td>
-				<td>{{contacts.notes}}</td>
+				<td>{{contact.contact.employees}}</td>
+				<td>{{contact.contact.ctc}}</td>
+				<td>{{contact.contact.notes}}</td>
 				
-				<td>{{contacts.remarks}}</td>
-
-				<td><a href="view/viewed/{{contacts.id}}" class="btn btn-primary">{{contacts.status}}</a></td>
+				<td>{{contact.contact.remarks}}</td>
+				<td>{{contact.score}}</td>
+				{% if contact.is_viewed %}
+					<td><button type="button" class="btn btn-primary btn-disabled" disabled>Viewed</button></td>
+				{% else %}
+					<td><a href="view/viewed/{{contact.contact.id}}" class="btn btn-primary">View</a></td>
+				{% endif %}
+			
 			</tr>
 			
 

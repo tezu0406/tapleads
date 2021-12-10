@@ -1,37 +1,94 @@
+{% load lookup_data %}
 <html>
     <head>
         <title>Set Limits</title>
-        <link rel="stylesheet" href="static/css/set_limits.css"> 
+        <link rel="stylesheet" href="static/css/dashboard.css"> 
     </head>
-    <body>    
-    <div class="container">
-        <h1>Set Limits</h1>
-        <table class="rwd-table">
-            <tbody>
-            <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>Subscription Type</th>
-                <th>Total Limits</th>
-                <th>Balance</th>
-                <th>Action</th>
-                <th>Set</th>
-            </tr>
-            <tr>
-                {% for row in UserData %}
-                {% if sub_type == 'paid' or sub_type == 'admin' %}
-                    <td data-th ="User ID"> {{ row.user_id }} </td>
-                    <td data-th = "Username"> {{ request.user }} </td>
-                    <td data-th = "Subscription Type"> {{ row.sub_type }} </td>
-                    <td data-th = "Total Limits"> {{ row.total_limits }} </td>
-                    <td data-th = "Balance"> {{ row.balance }} </td>
-                    <td data-th = "Action">  </td>
-                    <td data-th = "Set"><a href="set_limits/{{users.user_id}}" class="btn btn-primary">{{limits.total_limits}}</a></td>
-                {% endif %}
-                {% endfor %}
-            </tr>
-            </tbody>
-        </table>
+    <body> 
+        <input type="checkbox" id="nav-toggle">
+        <div class="sidebar">
+            <div class="sidebar-brand">
+              <h1> <span class="fab fa-asymmetrik"> </span> <span>TapLeads</span>
+              </h1>
+            </div>
+            
+            <div class="sidebar-menu">
+              <ul>
+                <li>
+                  <a href="/dashboard_redirect" >
+                    <span class="fas fa-tachometer-alt"></span>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="dashboard_redirect/view">
+                    <span class="fas fa-users" ></span>
+                    <span>View Contacts</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="logout">
+                    <span class="fas fa-tasks"></span>
+                    <span>Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+        </div>    
+    
+        <div class="main-content">
+            <header>
+                <h2>
+                    <label for="nav-toggle">
+                    <span class="fas fa-bars">=</span>
+                    </label>
+                    Dashboard
+                </h2>
+    
+            <div class="user-wrapper">
+                <div class="">
+                    <h4>{{ request.user }}</h4>
+                </div>
+            </div>
+            </header>   
+            <div class="container">
+                <h1>Set Limits</h1>
+                <center><div class="table-responsive">
+                  <table width="100%">
+                    <tbody>>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Subscription Type</th>
+                            <th>Total Limits</th>
+                            <th>Balance</th>
+                            <th>Action</th>
+                            <th>Set</th>
+                        </tr>
+                        {% for user in custom_users %}
+                            {% if user.data.subscription_type == 'paid' or user.data.subscription_type == 'Admin' %}
+                            <tr>
+                                <td data-th ="User ID"> {{ user.user.id }} </td>
+                                <td data-th = "Username"> {{ user.user.username }} </td>
+                                <td data-th = "Subscription Type"> {{ user.data.subscription_type }} </td>
+                                <td data-th = "Total Limits"> {{ user.data.total_limits }} </td>
+                                <td data-th = "Balance"> {{ user.data.balance }} </td>
+                                <form action="" method="POST">
+                                    <td data-th = "Action">
+                                        <input type="text" value="{{user.data.total_limits}}" name="total_limits" />
+                                        <input type="text" value="{{user.user.id}}" name="user_id" style="display: none;" />
+                                    </td>
+                                    <td data-th = "Set">
+                                        <input type="submit" />
+                                    </td>
+                                </form>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                  </table></center>
+                </div>
+            </div>
         </div>
     </div>
     </body>

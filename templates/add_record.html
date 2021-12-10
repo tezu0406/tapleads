@@ -1,10 +1,51 @@
 <html>
 <head>
-<link rel="stylesheet" href="static/css/add_record.css">
+<link rel="stylesheet" href="static/css/dashboard.css">
 </head>
 <body>
+  <input type="checkbox" id="nav-toggle">
+  <div class="sidebar">
+      <div class="sidebar-brand">
+        <h1> <span class="fab fa-asymmetrik"> </span> <span>TapLeads</span>
+        </h1>
+      </div>
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li>
+            <a href="/dashboard_redirect" >
+              <span class="fas fa-tachometer-alt"></span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="logout">
+              <span class="fas fa-tasks"></span>
+              <span>Logout</span>
+            </a>
+          </li>
+      </ul>
+      </div>
+  </div>    
+  <main>
+  <div class="main-content">
+      <header>
+          <h2>
+              <label for="nav-toggle">
+              <span class="fas fa-bars">=</span>
+              </label>
+              Dashboard
+          </h2>
 
-<div class="container">
+      <div class="user-wrapper">
+          <div class="">
+              <h4>{{ request.user }}</h4>
+          </div>
+      </div>
+      </header>
+      <div class="projects">
+          <div class="card">
+              <div class="card-header">
   <form action="" method='POST'>
     {% csrf_token %}
     <div class="card">
@@ -123,9 +164,8 @@
           <div class="input-icon"><i class="fa fa-key"></i></div>
         </div>
         <div class="input-group input-group-icon">
-          <label>Date of Incorporation
-          <input name="date_of_incorporation" type="date" placeholder="Date_of_Incorporation"/>
-          <div class="input-icon"><i class="fa fa-key"></i></div></label>
+          <input name = "date_of_incorporation" placeholder="Date of incorporation" class="textbox-n" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="date" />
+          <div class="input-icon"><i class="fa fa-key"></i></div>
         </div>
         <div class="input-group input-group-icon">
           <input name="employees" type="text" placeholder="Employees"/>
@@ -164,7 +204,7 @@
           <label for="terms">I accept the terms and conditions for signing up to this service, and hereby confirm I have read the privacy policy.</label>
         </div>
       </div>
-        <center><input type='submit' placeholder="Submit" style="background-color:#f0a500;"></center>
+        <center><input type='submit' placeholder="Submit"></center>
       </div>
     </div>
   </form>

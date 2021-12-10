@@ -21,19 +21,11 @@
               </a>
             </li>
             <li>
-              <a href="dashboard_admin/view">
+              <a href="dashboard_redirect/view">
                 <span class="fas fa-users" ></span>
                 <span>View Contacts</span>
               </a>
             </li>
-            <li>
-              <a href="#">
-                <span class="fas fa-shopping-cart"></span>
-                <span>Scoring</span>
-              </a>
-            </li>
-            <li>
-            
             <li>
               <a href="logout">
                 <span class="fas fa-tasks"></span>
@@ -41,13 +33,6 @@
               </a>
             </li>
           </ul>
-
-
-
-
-
-
-
         </div>
     </div>    
 
@@ -63,7 +48,6 @@
        
 
         <div class="user-wrapper">
-         <img src="https://bit.ly/3bvT89p" width="40px" height="40px" alt="profile-img">
          <div class="">
             <h4>{{ request.user }}</h4>
          </div>
@@ -92,7 +76,7 @@
           <div class="card-single">
             <div>
               <h2> Scoring type </h2>
-              <button> <span class="card-single button">Edit</span> </button>
+              <button><a href = "/set_score"><span class="card-single button">Edit</span> </a></button>
             </div>
             <div>
               <span class="fas fa-shopping-cart"></span>
@@ -110,34 +94,6 @@
 
         </div>
         <br>
-       
-         <!--
-          <div class="customers">
-            <div class="card">
-              <div class="card-header">
-                  <h2>Recent Search</h2>
-                  <button>See all <span class="fas fa-arrow-right"></span> </button>
-              </div>
-              <div class="card-body">
-                <div class="customer">
-                  <div class="info">
-                    <img src="https://bit.ly/3bvT89p" height="40px" width="40px" alt="customer">
-                    <div>
-                      <h4>Malik Abushabab</h4>
-                      <small>CEO</small>
-                    </div>
-                  </div>
-                  <div class="contact">
-                      <span class="fas fa-user-circle"></span>
-                      <span class="fas fa-comment"></span>
-                      <span class="fas fa-phone-alt"></span>
-                    </div>
-                </div>
-                
-              -->
-              <br>
-            </div>
-          </div>
             <div class="recent-grid2">
               <div class="projects">
                 <div class="card">
