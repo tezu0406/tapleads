@@ -19,6 +19,8 @@ import csv
 import json
 from django.db.models import Q
 from .tasks import recalculate
+import os
+import openpyxl
 
 # Create your views here.
 def homepage(request):
@@ -168,8 +170,14 @@ def import_record(request):
     return redirect('/')
    if request.method=='POST':
         global pd,df,col
-        file = request.POST.get('file')        
-        d=pd.read_csv(file)
+        file = request.POST.get('file')  
+        file_name,ex=os.path.splitext(file)
+        if  ex=='.csv':
+         d=pd.read_csv(file)
+         
+        else:
+         d=pd.read_excel(file)
+      
         df=pd.DataFrame(d)
         df.insert(0, "choose options", None)
         col=list(df.columns)
