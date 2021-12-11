@@ -164,6 +164,9 @@ def add_record(request):
 #ADD NEW 
 df=''
 col=""
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin','SuperUser'])
 def import_record(request):
    user_id=request.session.get('_auth_user_id')
    if user_id == None:
@@ -328,9 +331,6 @@ def dashboard_superuser(request):
 
 def dashboard_redirect(request):
   user_id=request.session.get('_auth_user_id')
-  if user_id == None:
-        return redirect('/')
-      
   group = request.user.groups.filter(user=request.user)[0]
   if group.name=="free_subscriber":
       return redirect('/dashboard_free')
@@ -347,6 +347,7 @@ def dashboard_redirect(request):
 #sub_type=input("Enter a type=")
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
 def record_show(request):
   s_search=SaveSearch.objects.all()[::-5]
   group = request.user.groups.filter(user=request.user)[0]
@@ -365,6 +366,9 @@ def record_show(request):
   return render(request,'view_records.html',{'contacts': contacts,'sub_type':sub_type,'save':s_search})
   
 
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['SuperUser'])
 def limit_data(request, id):
   user = request.user
   user_data=UserData.objects.get(user_id=user.id)
@@ -380,6 +384,7 @@ def limit_data(request, id):
 
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
 def save_search(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
@@ -392,6 +397,10 @@ def save_search(request):
     return redirect('/dashboard_redirect/view')
   return redirect('/dashboard_redirect/view')
 
+
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['paid_subscriber','Admin','SuperUser'])
 #Export Data
 def Export(request):
   ids=[]
@@ -421,7 +430,8 @@ def Export(request):
 
 
 
-
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['paid_subscriber','Admin','SuperUser'])
 def Export(request):
   ids=[]
   
@@ -465,6 +475,7 @@ def set_limits(request):
   
   
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
 def set_score(request):
   user_data = UserData.objects.get(user=request.user)
   methods = Method.objects.filter(Q(owner_id=None) | Q(owner_id=request.user.id))
@@ -482,6 +493,9 @@ def set_score(request):
                 }
   )
   
+  
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
 def select(request):
       if request.method =='POST':
             method = request.POST.get('method')
@@ -491,6 +505,10 @@ def select(request):
             recalculate.apply_async([request.user.id])
       return redirect('/set_score')
 
+
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
 def recalculate_score(request):
   recalculate.apply_async([request.user.id])
   return HttpResponse("Done")
