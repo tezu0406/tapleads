@@ -21,6 +21,7 @@ from django.db.models import Q
 from .tasks import recalculate
 import os
 import openpyxl
+import re
 
 # Create your views here.
 def homepage(request):
@@ -187,7 +188,7 @@ def import_record(request):
         df.insert(0, "choose options", None)
         col=list(df.columns)
         for i in range(0,len(col)):
-          df=df.rename(columns={col[i]:"_".join(col[i].split())})
+          df=df.rename(columns={col[i]:"_".join(re.split(', |_|-|!|\+ ',col[i].replace(' ','_')))})
         col=list(df.columns)
         return redirect('/dashboard_redirect/importrecord/import')
    return render(request,'importrecord.html')
@@ -275,7 +276,7 @@ def import_contacts(request):
           remarks=getattr(r,remarks),
           status=status,
           user_id=user_id)
-          print(contact.__dict__)
+          
           contact.save()
           time.sleep(0)
     return redirect('/dashboard_redirect/view')
