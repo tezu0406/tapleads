@@ -5,7 +5,7 @@ from contacts_app.models import Contact,UserData,Score
 from django.contrib import messages
 from django.core import serializers
 from contacts_app.models import Contact,UserData,View,SaveSearch,Method,Field
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import allowed_users, unauthenticated_user
@@ -54,9 +54,11 @@ def registration(request):
         name=request.POST.get('name')
         email=request.POST.get('email')
         phone_number=request.POST.get('phone_number')
-        subscription_type=request.POST.get('subscription_type')
-        user_data = UserData(user=user, name=name, phone_number=phone_number, subscription_type=subscription_type, email=email)
+        method=Method.objects.filter(type='predefined').first()
+        user_data = UserData(user=user, name=name, phone_number=phone_number, email=email, current_method=method)
         user_data.save()
+        my_group = Group.objects.get(name='free') 
+        my_group.user_set.add(user)
         messages.success(request,"Registration successful!")
         return redirect("/login")
       else:
@@ -280,7 +282,7 @@ def import_contacts(request):
   return render(request,'auto_record.html',{'col':col})  
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['free_subscriber','SuperUser'])
+@allowed_users(allowed_roles=['free','SuperUser'])
 def dashboard_free(request):
   user_id=request.session.get('_auth_user_id')
   users=UserData.objects.get(user_id=user_id)
@@ -291,7 +293,7 @@ def dashboard_free(request):
     
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['paid_subscriber','SuperUser'])
+@allowed_users(allowed_roles=['paid','SuperUser'])
 def dashboard_paid(request):
   user_id=request.session.get('_auth_user_id')
   user_data=UserData.objects.get(user_id=user_id)
@@ -332,9 +334,9 @@ def dashboard_superuser(request):
 def dashboard_redirect(request):
   user_id=request.session.get('_auth_user_id')
   group = request.user.groups.filter(user=request.user)[0]
-  if group.name=="free_subscriber":
+  if group.name=="free":
       return redirect('/dashboard_free')
-  elif group.name=="paid_subscriber":
+  elif group.name=="paid":
       return redirect('/dashboard_paid')
   elif group.name=="Admin":
       return redirect('/dashboard_admin')
@@ -347,7 +349,7 @@ def dashboard_redirect(request):
 #sub_type=input("Enter a type=")
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['free','paid','Admin','SuperUser'])
 def record_show(request):
   s_search=SaveSearch.objects.all()[::-5]
   group = request.user.groups.filter(user=request.user)[0]
@@ -384,7 +386,7 @@ def limit_data(request, id):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['free','paid','Admin','SuperUser'])
 def save_search(request):
   user_id=request.session.get('_auth_user_id')
   if user_id == None:
@@ -400,7 +402,7 @@ def save_search(request):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['paid','Admin','SuperUser'])
 #Export Data
 def Export(request):
   ids=[]
@@ -431,7 +433,7 @@ def Export(request):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['paid','Admin','SuperUser'])
 def Export(request):
   ids=[]
   
@@ -470,12 +472,12 @@ def set_limits(request):
   users_data = UserData.objects.all()
   custom_users = []
   for user in users:
-        custom_users.append({'user': user, 'data': users_data.get(user_id=user.id)})
+        custom_users.append({'user': user, 'data': users_data.filter(user_id=user.id).first()})
   return render(request,'set_limits.html', {'custom_users': custom_users})
   
   
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['free','paid','Admin','SuperUser'])
 def set_score(request):
   user_data = UserData.objects.get(user=request.user)
   methods = Method.objects.filter(Q(owner_id=None) | Q(owner_id=request.user.id))
@@ -495,7 +497,7 @@ def set_score(request):
   
   
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['free','paid','Admin','SuperUser'])
 def select(request):
       if request.method =='POST':
             method = request.POST.get('method')
@@ -508,7 +510,7 @@ def select(request):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['free_subscriber','paid_subscriber','Admin','SuperUser'])
+@allowed_users(allowed_roles=['free','paid','Admin','SuperUser'])
 def recalculate_score(request):
   recalculate.apply_async([request.user.id])
   return HttpResponse("Done")

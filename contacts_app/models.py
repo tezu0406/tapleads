@@ -78,7 +78,6 @@ class UserData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name=models.CharField(max_length=200, null=True)
     email = models.EmailField()
-    subscription_type = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=13, null=True)
     total_limits=models.IntegerField(default=0)
     viewed=models.IntegerField(default=0)

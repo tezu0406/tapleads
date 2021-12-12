@@ -101,7 +101,7 @@
           </div>
           <div class="card-single">
             <div>
-              <h1>{{ user_data.subscription_type }} Subscriber</h1>
+              <h1>{{ user.groups.all.0 }} Subscriber</h1>
               <span>Member since : {{ date_joined }}</span>
             </div>
             <div>
@@ -111,106 +111,6 @@
 
         </div>
         <br>
-        <div class="recent-grid2">
-          <div class="projects">
-            <div class="card">
-              <div class="card-header">
-                <h2>Recent Uploaded Records</h2>
-                <button>See all <span class="fas fa-arrow-right"></span> </button>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table width="100%">
-                  <thead>
-                    <tr>
-                      <td>Name</td>
-                      <td>Company</td>
-                      <td>Action</td>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for row in Contact %}
-                      {% for i in '012'|make_list %}
-                      <tr>
-                        <td>{{ row.full_name }} </td>
-                        <td>{{ row.company }}</td>
-                        <td>
-                          <button class="btn">View</button> 
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    {% endfor %}
-                  </tbody>
-
-                </table>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <!--view contact-->
-          <div class="recent-grid">
-            <div class="projects">
-              <div class="card">
-                <div class="card-header">
-                  <h2>Users List</h2>
-                  <button>See all <span class="fas fa-arrow-right"></span> </button>
-                </div>
-                <div class="card-body">
-                <div class="table-responsive">
-                  <table width="100%">
-                  <thead>
-                    <tr>
-                      <td>Name</td>
-                      <td>Company</td>
-                      <td>Action</td>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for row in Contact %}
-                      {% for i in '012'|make_list %}
-                      <tr>
-                        <td>{{ row.full_name }} </td>
-                        <td>{{ row.company }}</td>
-                        <td>
-                          <button class="btn">View </button> 
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    {% endfor %}
-                  </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="customers">
-            <div class="card">
-              <div class="card-header">
-                  <h2>New Users</h2>
-                  <button>See all <span class="fas fa-arrow-right"></span> </button>
-              </div>
-              <div class="card-body">
-                <div class="customer">
-                  <div class="info">
-                    <img src="https://bit.ly/3bvT89p" height="40px" width="40px" alt="customer">
-                    <div>
-                      <h4>Malik Abushabab</h4>
-                      <small>CEO</small>
-                    </div>
-                  </div>
-                  <div class="contact">
-                      <span class="fas fa-user-circle"></span>
-                      <span class="fas fa-comment"></span>
-                      <span class="fas fa-phone-alt"></span>
-                    </div>
-                </div>
-        </div>  
-
       </main>
     </div>
 
